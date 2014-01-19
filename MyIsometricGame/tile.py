@@ -1,11 +1,13 @@
 import pygame
 from MyIsometricGame.utils import utils
 
+
 class Tile(object):
 
     def __init__(self, filename, x=0, y=0):
         self.image = utils.convert_white_to_transparent(
-            pygame.image.load("assets/tiles/{}.png".format(filename)).convert_alpha())
+            pygame.image.load(
+                "assets/tiles/{}.png".format(filename)).convert_alpha())
         self.mask = pygame.mask.from_surface(self.image)
         self._x = x
         self._y = y
