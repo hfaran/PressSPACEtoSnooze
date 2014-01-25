@@ -26,7 +26,7 @@ class World(object):
         """
         return sorted(
             [v for v in self.static.values() + self.NPCs.values()],
-            key=lambda v: v.z
+            key=lambda v: v.z_index
         )
 
     @property

@@ -9,7 +9,7 @@ class Sprite(object):
 
     """Sprite class"""
 
-    def __init__(self, filename, x, y, fps=FU_FRAME_RATE):
+    def __init__(self, filename, x, y, z, fps=FU_FRAME_RATE):
         # self.image = utils.convert_white_to_transparent(
         #     pygame.image.load(
         #         "assets/sprites/{}/{}.png".format(filename, filename)
@@ -19,6 +19,7 @@ class Sprite(object):
 
         self._x = x
         self._y = y
+        self._z = z
 
         self._v_x = 0
         self._v_y = 0
@@ -46,8 +47,8 @@ class Sprite(object):
         self._y = y
 
     @property
-    def z(self):
-        return self._y + self.current_frame.get_height()
+    def z_index(self):
+        return self._y + self.current_frame.get_height() + self._z
 
     def update_dt(self):
         self.dt = datetime.now() - self.lastdt

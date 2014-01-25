@@ -3,4 +3,4 @@
 import FUGame
 
 if __name__ == '__main__':
-    FUGame.main.main()
+    FUGame.main.Game()
