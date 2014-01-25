@@ -1,9 +1,14 @@
 from pygame.locals import *
 
 
-#def event_map(world):
+def key_handle(event):
+    _event_map = {
+        K_ESCAPE: [exit, (0,)],
+    }
+    if event.key in _event_map:
+        func, args = _event_map[event.key]
+        return func(*args)
 
 EVENT_MAP = {
-    QUIT: [exit, (0,)],
-    #KEYDOWN: [world.NPCs.]
+    KEYDOWN: key_handle
 }
