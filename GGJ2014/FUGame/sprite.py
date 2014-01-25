@@ -10,7 +10,7 @@ class Sprite(object):
 
     """Sprite class"""
 
-    def __init__(self, filename, x, y, z, col_x_offset=None, col_y_offset=None,
+    def __init__(self, filename, x, y, z, col_pts, col_x_offset=None, col_y_offset=None,
                  fps=FU_FRAME_RATE):
         # self.image = utils.convert_white_to_transparent(
         #     pygame.image.load(
@@ -38,6 +38,8 @@ class Sprite(object):
         self.is_moving = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
+
+        self.col_pts = col_pts
 
         if all([col_y_offset is not None, col_x_offset is not None]):
             self.col_x_offset = col_x_offset
