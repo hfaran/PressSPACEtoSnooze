@@ -13,5 +13,7 @@ FU_DIRECTS = {
 
 FU_LEVELS = ["room"]
 
+FU_CMD_POS = (50, 650)
+
 
 #assert all(i.startswith("FU_") for i in __all__)

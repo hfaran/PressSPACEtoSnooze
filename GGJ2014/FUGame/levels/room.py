@@ -3,7 +3,9 @@ from pygame.locals import *
 
 from FUGame.character import Character, Sprite
 from FUGame.world import World
+from FUGame.constants import *
 from random import randint
+from datetime import datetime
 
 
 class EventHandlerMixin:
@@ -12,13 +14,19 @@ class EventHandlerMixin:
         self.world.NPCs["guy"].is_moving = True
         self.world.NPCs["guy"].direction = direction
 
+    def _snooze(self):
+        if self.display_cmd:
+            self.display_cmd = False
+            self.snooze_time = datetime.now()
+
     @property
     def event_map(self):
         _event_map = {
             K_LEFT: [self._move_character, ("L",)],
             K_RIGHT: [self._move_character, ("R",)],
             K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)]
+            K_DOWN: [self._move_character, ("F",)],
+            K_SPACE: [self._snooze, ()]
         }
         return _event_map
 
@@ -31,6 +39,11 @@ class Room(object, EventHandlerMixin):
 
     def __init__(self):
         self.world = self.create_world()
+        self.clock_font = pygame.font.SysFont("comicsansms", 16)
+        self.cmd_font = pygame.font.SysFont("arial", 48)
+        self.cmd = "Press 'SPACE' to Snooze"
+        self.display_cmd = False
+
         self.sky = Sprite(
             filename="sky",
             x=515,
@@ -51,8 +64,21 @@ class Room(object, EventHandlerMixin):
                 col_x_offset=None,
                 col_y_offset=None,
                 fps=10
-            ) for i in xrange(1,5)
+            ) for i in xrange(1, 5)
         ]
+
+        self.snooze_time = datetime.now()
+        self.start_time = datetime.now()
+        self.game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
+
+    def seconds_to_time(self, secs):
+        secs = secs + 51 + 5*60
+        hours = int(secs / 60)
+        mins = int(secs % 60)
+
+        return "{}:{}".format(hours, str(mins).zfill(2))
 
     def create_world(self):
         # Create objects
@@ -206,19 +232,38 @@ class Room(object, EventHandlerMixin):
         else:
             self.world.NPCs["guy"].set_z(0)
 
-        screen.blit(self.sky.current_frame, self.sky.pos)
+        self.game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
 
         self.update_clouds()
 
+        # Blitting
+        screen.blit(self.sky.current_frame, self.sky.pos)
+
         for c in sorted(self.clouds, key=lambda x: x.pos[1]):
             screen.blit(c.current_frame, c.pos)
+
+        screen.blit(self.world.bg, self.world.pos)
+
+        for s in self.world.sprites:
+            screen.blit(s.current_frame, s.pos)
+            if s.name == "alarmClock":
+                screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
+
+        if (datetime.now() - self.snooze_time).total_seconds() >= 9:
+            self.display_cmd = True
+            self.cmd = "Press 'SPACE' to Snooze"
+
+        if self.display_cmd:
+            screen.blit(self.cmd_font.render(self.cmd, True, (255, 255, 255)), FU_CMD_POS)
 
     def update_clouds(self):
         for c in self.clouds:
             if c.pos[0] > 880:
                 c.set_pos(randint(self.cloud_min_x, self.cloud_max_x), randint(self.cloud_min_y, self.cloud_max_y))
             else:
-                c.set_pos(c.pos[0] + 5, c.pos[1])
+                c.set_pos(c.pos[0] + randint(1,4), c.pos[1])
 
 
     def _animate(self, s):
