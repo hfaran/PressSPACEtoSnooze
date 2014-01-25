@@ -33,6 +33,7 @@ class Sprite(object):
         self.current_frame_num = 0
         self.current_frame = self.anims[
             self.current_anim][self.current_frame_num]
+        self.is_moving = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
 

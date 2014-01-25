@@ -22,13 +22,47 @@ class Room(object):
                 speed=1
             ),
         }
-        world = World("room", "room_bg", None, chars, 0, 0)
+        world = World(
+            "room",
+            "room_bg",
+            None,
+            chars,
+            0,
+            0
+        )
         return world
 
     def handle_events(self, event):
-        handled = False
-        if event.type == KEYDOWN:
-            if event.key == K_LEFT:
-                world.NPCs["guy"].move("L")
-                handled = True
-        return handled
+        keys = pygame.key.get_pressed()
+        if keys[K_LEFT]:
+            self.world.NPCs["guy"].is_moving = True
+            self.world.NPCs["guy"].direction = "L"
+            return True
+        if keys[K_RIGHT]:
+            self.world.NPCs["guy"].is_moving = True
+            self.world.NPCs["guy"].direction = "R"
+            return True
+        if keys[K_DOWN]:
+            self.world.NPCs["guy"].is_moving = True
+            self.world.NPCs["guy"].direction = "F"
+            return True
+        if keys[K_UP]:
+            self.world.NPCs["guy"].is_moving = True
+            self.world.NPCs["guy"].direction = "B"
+            return True
+        else:
+            self.world.NPCs["guy"].is_moving = False
+        return False
+
+    def update_loop(self):
+        for s in self.world.NPCs.values():
+            # Movement
+            if s.is_moving:
+                s.move()
+                self._animate(s)
+
+    def _animate(self, s):
+        # Animation
+        s.update_dt()
+        if s.dt.microseconds > 1.0 / s.fps * 1000000:
+            s.next_frame()

@@ -29,6 +29,8 @@ class Game(object):
         self.levels = ["room"]
 
     def loop(self):
+        self.level.update_loop()
+
         self.screen.blit(self.level.world.bg, self.level.world.pos)
         for s in self.level.world.sprites:
             self.screen.blit(s.current_frame, s.pos)
@@ -39,6 +41,8 @@ class Game(object):
         for event in pygame.event.get():
             if self.level.handle_events(event):
                 return True
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                exit(0)
             elif event.type in EVENT_MAP:
                 func = EVENT_MAP[event.type][0]
                 args = EVENT_MAP[event.type][1:]
@@ -61,12 +65,6 @@ class Game(object):
         # Game loop
         while True:
             self.loop()
-            # char.update_dt()
-            # if char.dt.microseconds > 1.0 / char.fps * 1000000:
-            #     print "HIIII"
-            #     char.next_frame()
-            #     screen.blit(char.current_frame, char.get_pos())
-            #     pygame.display.flip()
             pygame.display.flip()
 
 
