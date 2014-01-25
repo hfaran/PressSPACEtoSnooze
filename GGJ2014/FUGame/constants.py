@@ -11,7 +11,7 @@ FU_DIRECTS = {
     "R": (1,  0),
 }
 
-FU_LEVELS = ["room"]
+FU_LEVELS = ["room", "work"]
 
 FU_CMD_POS = (50, 650)
 
