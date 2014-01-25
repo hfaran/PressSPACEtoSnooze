@@ -11,6 +11,7 @@ from FUGame.event_handlers import EVENT_MAP
 from FUGame.character import Character
 from FUGame.world import World
 from FUGame import levels
+from FUGame.utils import utils
 
 
 class Game(object):
@@ -32,23 +33,18 @@ class Game(object):
 
     def loop(self):
         self.level.update_loop(self.screen)
-
         # self.screen.blit(self.level.world.bg, self.level.world.pos)
         # for s in self.level.world.sprites:
         #     self.screen.blit(s.current_frame, s.pos)
-
         self.handle_events()
 
     def handle_events(self):
         for event in pygame.event.get():
             if self.level.handle_events(event):
                 return True
-            elif event.type == KEYDOWN and event.key == K_ESCAPE:
-                exit(0)
             elif event.type in EVENT_MAP:
-                func = EVENT_MAP[event.type][0]
-                args = EVENT_MAP[event.type][1:]
-                func(*args)
+                func = EVENT_MAP[event.type]
+                func(event)
                 return True
         else:
             return False
@@ -61,13 +57,19 @@ class Game(object):
         return level
 
     def main(self):
+        # Create initial level
         self.current_level = self.levels[0]
         self.level = self.create_level(self.current_level)
-
         # Game loop
         while True:
-            self.loop()
-            pygame.display.flip()
+            # Call self.loop() continuously, until it raises
+            # a NextLevelException with info on what level to load next
+            try:
+                self.loop()
+                pygame.display.flip()
+            except utils.NextLevelException as e:
+                self.current_level = e.next_level
+                self.level = self.create_level(self.current_level)
 
 
 if __name__ == '__main__':
