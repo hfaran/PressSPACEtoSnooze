@@ -1,6 +1,9 @@
 import pygame
 from pygame.locals import *
 
+from FUGame.character import Character
+from FUGame.world import World
+
 
 class Room(object):
 
