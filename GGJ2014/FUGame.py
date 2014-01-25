@@ -29,7 +29,7 @@ class Game(object):
         self.levels = FU_LEVELS
 
     def loop(self):
-        self.level.update_loop()
+        self.level.update_loop(self.screen)
 
         self.screen.blit(self.level.world.bg, self.level.world.pos)
         for s in self.level.world.sprites:

@@ -53,6 +53,12 @@ class Sprite(object):
         """Position of the collision box of the sprite"""
         return self._x + self.col_x_offset, self._y + self.col_y_offset
 
+    def set_anim(self, anim):
+        self.current_anim = anim
+        self.current_frame_num = 0
+        self.current_frame = self.anims[
+            self.current_anim][self.current_frame_num]
+
     @property
     def pos(self):
         """Get position of Sprite"""
@@ -62,6 +68,9 @@ class Sprite(object):
         """Set position of Sprite"""
         self._x = x
         self._y = y
+
+    def set_z(self, z):
+        self._z = z
 
     @property
     def z_index(self):
