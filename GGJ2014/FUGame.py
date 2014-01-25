@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+
 import pygame
 from pygame.locals import *
 
@@ -31,9 +33,9 @@ class Game(object):
     def loop(self):
         self.level.update_loop(self.screen)
 
-        self.screen.blit(self.level.world.bg, self.level.world.pos)
-        for s in self.level.world.sprites:
-            self.screen.blit(s.current_frame, s.pos)
+        # self.screen.blit(self.level.world.bg, self.level.world.pos)
+        # for s in self.level.world.sprites:
+        #     self.screen.blit(s.current_frame, s.pos)
 
         self.handle_events()
 

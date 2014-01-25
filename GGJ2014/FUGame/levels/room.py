@@ -3,14 +3,23 @@ from pygame.locals import *
 
 from FUGame.character import Character, Sprite
 from FUGame.world import World
+from FUGame.constants import *
+from FUGame.utils import utils
 from random import randint
+from datetime import datetime
 
 
 class EventHandlerMixin:
 
     def _move_character(self, direction):
-        self.world.NPCs["guy"].is_moving = True
-        self.world.NPCs["guy"].direction = direction
+        if self.allow_move:
+            self.world.NPCs["guy"].is_moving = True
+            self.world.NPCs["guy"].direction = direction
+
+    def _snooze(self):
+        if self.display_cmd:
+            self.display_cmd = False
+            self.snooze_time = datetime.now()
 
     @property
     def event_map(self):
@@ -18,7 +27,8 @@ class EventHandlerMixin:
             K_LEFT: [self._move_character, ("L",)],
             K_RIGHT: [self._move_character, ("R",)],
             K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)]
+            K_DOWN: [self._move_character, ("F",)],
+            K_SPACE: [self._snooze, ()]
         }
         return _event_map
 
@@ -31,6 +41,14 @@ class Room(object, EventHandlerMixin):
 
     def __init__(self):
         self.world = self.create_world()
+        self.clock_font = pygame.font.SysFont("comicsansms", 16)
+        self.cmd_font = pygame.font.SysFont("arial", 48)
+        self.cmd = "Press 'SPACE' to Snooze"
+        self.display_cmd = False
+        self.allow_move = False
+        self.is_waking = False
+        self.snooze_length = 3
+
         self.sky = Sprite(
             filename="sky",
             x=515,
@@ -51,8 +69,23 @@ class Room(object, EventHandlerMixin):
                 col_x_offset=None,
                 col_y_offset=None,
                 fps=10
-            ) for i in xrange(1,5)
+            ) for i in xrange(1, 5)
         ]
+
+        self.door_rect = pygame.Rect(75, 365, 5, 130)
+
+        self.snooze_time = datetime.now()
+        self.start_time = datetime.now()
+        self.game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
+
+    def seconds_to_time(self, secs):
+        secs = secs + 51 + 5*60
+        hours = int(secs / 60)
+        mins = int(secs % 60)
+
+        return "{}:{}".format(hours, str(mins).zfill(2))
 
     def create_world(self):
         # Create objects
@@ -65,7 +98,7 @@ class Room(object, EventHandlerMixin):
                 col_pts=[],
                 col_x_offset=7,
                 col_y_offset=92,
-                fps=10,
+                fps=4,
                 speed=5
             ),
         }
@@ -160,7 +193,8 @@ class Room(object, EventHandlerMixin):
             y=0
         )
 
-        world.NPCs["guy"].set_anim("L")
+        world.NPCs["guy"].set_anim("S")
+        world.NPCs["guy"].is_animating = True
 
         world.static["pillows"].set_z(world.static["bed"].z_index + 1
                                       - world.static["pillows"].pos[1]
@@ -179,17 +213,26 @@ class Room(object, EventHandlerMixin):
             self.world.NPCs["guy"].is_moving = False
             return False
 
-    def char_in_bed(self):
-        sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
-        sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
-
+    def char_in_bed(self, sprite_rect):
         bed_rect = self.world.static["bed"].col_image.get_rect()
         bed_rect.x, bed_rect.y = self.world.static["bed"].col_pos
 
         if bed_rect.colliderect(sprite_rect):
             return True
 
+    def _wake_character(self):
+        self.world.NPCs["guy"].is_moving = True
+        self.world.NPCs["guy"].direction = "L"
+
     def update_loop(self, screen):
+        # Create character collision box thing
+        sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
+        sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
+
+        for s in self.world.sprites:
+            if s.is_animating is True:
+                self._animate(s)
+
         for s in self.world.NPCs.values():
             # Movement
             if s.is_moving:
@@ -199,26 +242,59 @@ class Room(object, EventHandlerMixin):
                     s.set_pos(*s.old_pos)
                 self._animate(s)
 
-        if self.char_in_bed():
+        if self.char_in_bed(sprite_rect):
             self.world.NPCs["guy"].set_z(self.world.static["bed"].z_index + 1
                                          - self.world.NPCs["guy"].pos[1]
                                          - self.world.NPCs["guy"].current_frame.get_height())
         else:
             self.world.NPCs["guy"].set_z(0)
 
-        screen.blit(self.sky.current_frame, self.sky.pos)
+        if self.door_rect.colliderect(sprite_rect):
+            raise utils.NextLevelException("work", 0)
+
+        self.game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
 
         self.update_clouds()
 
+        if not self.allow_move:
+            if self.world.NPCs["guy"].pos[0] < 450:
+                self.allow_move = True
+                self.world.NPCs["guy"].is_moving = False
+            elif self.is_waking:
+                self._wake_character()
+                self.world.NPCs["guy"].is_animating = False
+                self.world.NPCs["guy"].fps = 10
+            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length*2:
+                self.display_cmd = False
+                self.is_waking = True
+            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
+                self.display_cmd = True
+                self.cmd = "Press 'SPACE' to Snooze"
+
+        # Blitting
+        screen.blit(self.sky.current_frame, self.sky.pos)
+
         for c in sorted(self.clouds, key=lambda x: x.pos[1]):
             screen.blit(c.current_frame, c.pos)
+
+        screen.blit(self.world.bg, self.world.pos)
+
+        for s in self.world.sprites:
+            screen.blit(s.current_frame, s.pos)
+            if s.name == "alarmClock":
+                screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
+
+        if self.display_cmd:
+            screen.blit(self.cmd_font.render(self.cmd, True, (255, 255, 255)), FU_CMD_POS)
 
     def update_clouds(self):
         for c in self.clouds:
             if c.pos[0] > 880:
                 c.set_pos(randint(self.cloud_min_x, self.cloud_max_x), randint(self.cloud_min_y, self.cloud_max_y))
             else:
-                c.set_pos(c.pos[0] + 5, c.pos[1])
+                c.set_pos(c.pos[0] + randint(1,4), c.pos[1])
 
 
     def _animate(self, s):

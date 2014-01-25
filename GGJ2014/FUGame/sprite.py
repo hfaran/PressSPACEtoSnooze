@@ -36,6 +36,7 @@ class Sprite(object):
         self.current_frame = self.anims[
             self.current_anim][self.current_frame_num]
         self.is_moving = False
+        self.is_animating = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
 
@@ -89,12 +90,12 @@ class Sprite(object):
 
     def load_frames(self):
         path = os.path.join("assets", "sprites", self.name)
-        l = os.listdir(path)
+        l = sorted(os.listdir(path))
         d = {
             folder_name: [pygame.image.load(
                 os.path.join(path, folder_name, image)
-            ) for image in os.listdir(
-                os.path.join(path, folder_name))] for folder_name in l
+            ) for image in sorted(os.listdir(
+                os.path.join(path, folder_name)))] for folder_name in l
         }
         # print(d)
         return d
