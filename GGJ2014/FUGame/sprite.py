@@ -1,11 +1,11 @@
 import pygame
-from MyIsometricGame.utils import utils
+from FUGame.utils import utils
 
 
 class Sprite(object):
     """Sprite class
     """
-    def __init__(self):
+    def __init__(self, filename, x, y):
         self.image = utils.convert_white_to_transparent(
             pygame.image.load(
                 "assets/sprites/{}.png".format(filename)
