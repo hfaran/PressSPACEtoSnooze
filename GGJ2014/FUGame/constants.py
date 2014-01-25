@@ -10,3 +10,8 @@ FU_DIRECTS = {
     "L": (-1, 0),
     "R": (1,  0),
 }
+
+FU_LEVELS = ["room"]
+
+
+#assert all(i.startswith("FU_") for i in __all__)

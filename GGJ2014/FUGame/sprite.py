@@ -1,7 +1,8 @@
 import pygame
 import os
-from FUGame.constants import *
 from datetime import datetime
+
+from FUGame.constants import *
 from FUGame.utils import utils
 
 
@@ -9,7 +10,8 @@ class Sprite(object):
 
     """Sprite class"""
 
-    def __init__(self, filename, x, y, z, fps=FU_FRAME_RATE):
+    def __init__(self, filename, x, y, z, col_x_offset=None, col_y_offset=None,
+                 fps=FU_FRAME_RATE):
         # self.image = utils.convert_white_to_transparent(
         #     pygame.image.load(
         #         "assets/sprites/{}/{}.png".format(filename, filename)
@@ -36,6 +38,18 @@ class Sprite(object):
         self.is_moving = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
+
+        if all([col_y_offset is not None, col_x_offset is not None]):
+            self.col_x_offset = col_x_offset
+            self.col_y_offset = col_y_offset
+            self.col_image = pygame.image.load(os.path.join(
+                FU_APATH, "collision", filename + ".png")
+            )
+
+    @property
+    def col_pos(self):
+        """Position of the collision box of the sprite"""
+        return self._x + self.col_x_offset, self._y + self.col_y_offset
 
     @property
     def pos(self):
@@ -71,7 +85,7 @@ class Sprite(object):
             ) for image in os.listdir(
                 os.path.join(path, folder_name))] for folder_name in l
         }
-        #print(d)
+        # print(d)
         return d
 
     def point_collision(self, pos):

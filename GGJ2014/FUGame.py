@@ -26,7 +26,7 @@ class Game(object):
         pygame.display.set_caption('FUGame')
 
         # Levels
-        self.levels = ["room"]
+        self.levels = FU_LEVELS
 
     def loop(self):
         self.level.update_loop()
