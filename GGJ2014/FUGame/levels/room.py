@@ -6,7 +6,24 @@ from FUGame.world import World
 from random import randint
 
 
-class Room(object):
+class EventHandlerMixin:
+
+    def _move_character(self, direction):
+        self.world.NPCs["guy"].is_moving = True
+        self.world.NPCs["guy"].direction = direction
+
+    @property
+    def event_map(self):
+        _event_map = {
+            K_LEFT: [self._move_character, ("L",)],
+            K_RIGHT: [self._move_character, ("R",)],
+            K_UP: [self._move_character, ("B",)],
+            K_DOWN: [self._move_character, ("F",)]
+        }
+        return _event_map
+
+
+class Room(object, EventHandlerMixin):
     cloud_min_x = 200
     cloud_max_x = 300
     cloud_min_y = 0
@@ -153,25 +170,14 @@ class Room(object):
 
     def handle_events(self, event):
         keys = pygame.key.get_pressed()
-        if keys[K_LEFT]:
-            self.world.NPCs["guy"].is_moving = True
-            self.world.NPCs["guy"].direction = "L"
-            return True
-        if keys[K_RIGHT]:
-            self.world.NPCs["guy"].is_moving = True
-            self.world.NPCs["guy"].direction = "R"
-            return True
-        if keys[K_DOWN]:
-            self.world.NPCs["guy"].is_moving = True
-            self.world.NPCs["guy"].direction = "F"
-            return True
-        if keys[K_UP]:
-            self.world.NPCs["guy"].is_moving = True
-            self.world.NPCs["guy"].direction = "B"
-            return True
+        for key, l in self.event_map.iteritems():
+            func, args = l
+            if keys[key]:
+                func(*args)
+                return True
         else:
             self.world.NPCs["guy"].is_moving = False
-        return False
+            return False
 
     def char_in_bed(self):
         sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
