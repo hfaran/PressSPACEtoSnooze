@@ -1,4 +1,5 @@
 import pygame
+from FUGame.character import Character
 from pygame.locals import *
 
 from itertools import chain
@@ -18,7 +19,7 @@ def main():
         (FU_WIDTH, FU_HEIGHT),
     )
     pygame.display.set_caption('FUGame')
-
+    char = Character("test", 0, 0)
     # Game loop
     while True:
         for event in pygame.event.get():

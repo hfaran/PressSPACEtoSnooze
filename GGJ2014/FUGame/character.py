@@ -1,9 +1,8 @@
 import pygame
+from FUGame.sprite import Sprite
 from FUGame.utils import utils
 
 
-class Character(object):
+class Character(Sprite):
     """
     """
-    def __init__(self):
-        pass
