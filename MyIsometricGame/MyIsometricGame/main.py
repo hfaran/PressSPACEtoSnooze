@@ -21,7 +21,7 @@ def generate_floor(numx, numy):
         return int((x + y) * w / 4.0)
 
     def create_tile(x, y):
-        """Create tile at coordiantes (x, y)"""
+        """Create tile at coordinates (x, y)"""
         t = Tile(choice(__colors))
         width, height = t.image.get_size()
         t.set_pos(getx(x, y, width, height), gety(x, y, width, height))
