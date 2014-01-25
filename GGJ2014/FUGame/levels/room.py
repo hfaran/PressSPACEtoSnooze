@@ -5,8 +5,10 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+
 from random import randint
 from datetime import datetime
+from time import sleep
 
 
 class EventHandlerMixin:
@@ -15,11 +17,19 @@ class EventHandlerMixin:
         if self.allow_move:
             self.world.NPCs["guy"].is_moving = True
             self.world.NPCs["guy"].direction = direction
+            return True
 
     def _snooze(self):
         if self.display_cmd:
             self.display_cmd = False
             self.snooze_time = datetime.now()
+            self.world.NPCs["guy"].set_anim("SNZ")
+            return True
+
+    def _stop_snooze(self):
+        if self.world.NPCs["guy"].current_anim == "SNZ":
+            self.world.NPCs["guy"].set_anim("L")
+            return True
 
     @property
     def event_map(self):
@@ -29,6 +39,13 @@ class EventHandlerMixin:
             K_UP: [self._move_character, ("B",)],
             K_DOWN: [self._move_character, ("F",)],
             K_SPACE: [self._snooze, ()]
+        }
+        return _event_map
+
+    @property
+    def false_event_map(self):
+        _event_map = {
+            K_SPACE: [self._stop_snooze, ()]
         }
         return _event_map
 
@@ -92,7 +109,7 @@ class Room(object, EventHandlerMixin):
         chars = {
             "guy": Character(
                 filename="main",
-                x=560,
+                x=550,
                 y=190,
                 z=0,
                 col_pts=[],
@@ -203,15 +220,23 @@ class Room(object, EventHandlerMixin):
         return world
 
     def handle_events(self, event):
+        truthy_res = False
+        falsy_res = False
         keys = pygame.key.get_pressed()
+
+        for key, l in self.false_event_map.iteritems():
+            func, args = l
+            if not keys[key]:
+                falsy_res = bool(func(*args))
+
         for key, l in self.event_map.iteritems():
             func, args = l
             if keys[key]:
-                func(*args)
-                return True
-        else:
+                truthy_res = bool(func(*args))
+
+        if not truthy_res:
             self.world.NPCs["guy"].is_moving = False
-            return False
+        return truthy_res or falsy_res
 
     def char_in_bed(self, sprite_rect):
         bed_rect = self.world.static["bed"].col_image.get_rect()
@@ -269,7 +294,10 @@ class Room(object, EventHandlerMixin):
             elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length*2:
                 self.display_cmd = False
                 self.is_waking = True
+                self.world.NPCs["guy"].set_anim("L")
             elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
+                self.world.NPCs["guy"].is_animating = False
+                self.world.NPCs["guy"].set_anim("W")
                 self.display_cmd = True
                 self.cmd = "Press 'SPACE' to Snooze"
 
