@@ -9,7 +9,7 @@ class World(object):
 
     """World class"""
 
-    def __init__(self, level_id, bg_filename, static, NPCs, x, y):
+    def __init__(self, level_id, bg_filename, col_pts, static, NPCs, x, y):
         self.bg = pygame.image.load(
             os.path.join(FU_APATH, "backgrounds", bg_filename + ".png")
         )
@@ -19,6 +19,7 @@ class World(object):
         self.NPCs = NPCs if NPCs else {}
         self._x = x
         self._y = y
+        self.col_pts = col_pts
 
     def get_border_rects(self):
         rects = []
@@ -53,15 +54,28 @@ class World(object):
         self._y = y
 
     def check_colliding(self, sprite):
+        # sprite_rect = sprite.col_image.get_rect()
+        # sprite_rect.x, sprite_rect.y = sprite.col_pos
+        # for s in [
+        #         s for s in self.static.values() + self.NPCs.values()
+        #         if s.name != sprite.name]:
+        #     if hasattr(s, "col_image"):
+        #         s_rect = s.col_image.get_rect()
+        #         s_rect.x, s_rect.y = s.col_pos
+        #         if s_rect.colliderect(sprite_rect):
+        #             return True
+
         sprite_rect = sprite.col_image.get_rect()
         sprite_rect.x, sprite_rect.y = sprite.col_pos
-        for s in [
-                s for s in self.static.values() + self.NPCs.values()
-                if s.name != sprite.name]:
-            if hasattr(s, "col_image"):
-                s_rect = s.col_image.get_rect()
-                s_rect.x, s_rect.y = s.col_pos
-                if s_rect.colliderect(sprite_rect):
+
+        for s in [s for s in self.static.values() + self.NPCs.values() if s.name != sprite.name]:
+            for pt in s.col_pts:
+                abs_pt = (pt[0] + s.pos[0], pt[1] + s.pos[1])
+                if sprite_rect.collidepoint(abs_pt):
+                    return True
+
+        for pt in self.col_pts:
+                if sprite_rect.collidepoint(pt):
                     return True
 
         sprite_rect = sprite.current_frame.get_rect()
