@@ -132,6 +132,7 @@ class Room(Level, EventHandlerMixin):
                 speed=7
             ),
         }
+
         statics = {
             "desk": Sprite(
                 filename="desk",

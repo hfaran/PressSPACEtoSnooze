@@ -5,31 +5,28 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 
-class EventHandlerMixin:
+class EventHandlerMixin(BaseEventHandlerMixin):
 
-    def _move_character(self, direction):
-        self.world.NPCs["guy"].is_moving = True
-        self.world.NPCs["guy"].direction = direction
+    def _use(self):
+        raise NotImplementedError
 
     @property
     def event_map(self):
-        _event_map = {
-            K_LEFT: [self._move_character, ("L",)],
-            K_RIGHT: [self._move_character, ("R",)],
-            K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)]
-        }
+        _event_map = dict(self._move_event_map)
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
 
-class Office(object, EventHandlerMixin):
+class Office(Level, EventHandlerMixin):
 
     def __init__(self):
-        self.world = self.create_world
+        self.world = self.create_world()
 
-    @property
+        self.allow_move = True
+
     def create_world(self):
         # Create objects
         chars = {
@@ -47,26 +44,86 @@ class Office(object, EventHandlerMixin):
         }
 
         statics = {
+            "officeChairMain": Sprite(
+                filename="officeChairMain",
+                x=288,
+                y=278,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
 
+            "officeChairRival": Sprite(
+                filename="officeChairRival",
+                x=989,
+                y=228,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+            ),
+
+            "garbageCan": Sprite(
+                filename="garbageCan",
+                x=1108,
+                y=460,
+                z=0,
+                col_pts=[(97, 59), (0, 59), (7, 21), (44, 0), (77, 11), (90, 29)],
+                col_x_offset=None,
+                col_y_offset=None,
+            ),
+
+            "sparks": Sprite(
+                filename="sparks",
+                x=665,
+                y=535,
+                z=0,
+                col_pts=[(0, 0), (0, 42), (49, 0), (49, 42)],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=20
+            ),
+
+            "computerBlink": Sprite(
+                filename="computerBlink",
+                x=450,
+                y=285,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
+            "officeWalls": Sprite(
+                filename="officeWalls",
+                x=0,
+                y=0,
+                z=1,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            )
         }
 
         world = World(
             level_id="office",
+            #bg_filename="office_bg_placement_reference",
             bg_filename="office_bg",
             static=statics,
             NPCs=chars,
-            col_pts=[(57, 504), (76, 504), (110, 504), (137, 502), (164, 502), (172, 478), (174, 441), (185, 404),
-                     (191, 363), (207, 329), (210, 291), (253, 295), (296, 293), (329, 296), (374, 289), (422, 294),
-                     (464, 295), (511, 291), (534, 291), (555, 312), (550, 341), (557, 393), (546, 111), (546, 142),
-                     (546, 180), (546, 209), (758, 391), (757, 359), (753, 311), (752, 262), (761, 209), (753, 163),
-                     (753, 106), (807, 291), (854, 286), (892, 289), (935, 293), (971, 294), (1000, 291), (1039, 290),
-                     (1078, 291), (1114, 290), (1157, 290), (1166, 329), (1177, 356), (1179, 393), (1189, 431),
-                     (1193, 462), (1206, 496), (1239, 503), (1277, 506), (1303, 500)],
+            col_pts=[
+            (67, 497), (107, 497), (124, 493), (155, 493), (171, 481), (181, 439), (190, 382), (207, 334), (207, 304),
+            (220, 285), (257, 275), (298, 275), (347, 275), (395, 275), (450, 285), (459, 330), (508, 331), (538, 351),
+            (548, 272), (565, 251), (566, 179), (725, 214), (744, 277), (744, 348), (770, 305), (819, 309), (858, 305),
+            (923, 305), (990, 302), (1057, 299), (1116, 303), (1137, 326), (1153, 393), (1169, 452), (1178, 521),
+            (1225, 517), (1299, 516)],
             x=0,
             y=0
         )
 
         world.NPCs["guy"].set_anim("F")
+        world.static["sparks"].is_animating = True
 
         return world
 
@@ -83,32 +140,13 @@ class Office(object, EventHandlerMixin):
             return False
 
     def update_loop(self, screen, game_clock):
-        # Create character collision box thing
-        sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
-        sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
+        self._animate_sprites()
+        self._move_npcs(game_clock)
 
-        for s in self.world.sprites:
-            if s.is_animating is True:
-                self._animate(s)
+        # Blitting
+        self._blit(screen)
 
-        for s in self.world.NPCs.values():
-            # Movement
-            if s.is_moving:
-                if not self.world.check_colliding(s):
-                    s.move(game_clock.get_fps())
-                else:
-                    s.set_pos(*s.old_pos)
-                self._animate(s)
-
-        #Blitting
+    def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
-
         for s in self.world.sprites:
             screen.blit(s.current_frame, s.pos)
-
-
-    def _animate(self, s):
-        # Animation
-        s.update_dt()
-        if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
