@@ -26,6 +26,10 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             elif s.name == "bigShroom" and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.is_animating = True
                 break
+        for n, w in enumerate(self._swag_words[:]):
+            if w.rect.colliderect(self.guy.sprite_rect):
+                self._swag_words.remove(w)
+
 
     @property
     def event_map(self):
@@ -37,18 +41,18 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 class SwagWord(object):
 
     def __init__(self, word):
-        self._Y_BOUNDS = (0, int(FU_HEIGHT*4.0/4.0))
-        self._X_BOUNDS = (0, int(FU_WIDTH*2.0/4.0))
+        self._Y_BOUNDS = (200, 530)
+        self._X_BOUNDS = (50, 500)
         self.word = word
         self.gen_new_rect()
-        self.font = pygame.font.SysFont("comicsansms", 48)
+        self.font = pygame.font.SysFont("comicsansms", 24)
         self.fc = 0
         self.freq = randint(3,10)
 
     def gen_new_rect(self):
         self.rect = pygame.Rect(
             randint(*self._X_BOUNDS), randint(*self._Y_BOUNDS),
-            1000, 300)
+            150, 50)
 
     def draw(self, screen):
         self.fc = (self.fc + 1) % self.freq
@@ -67,6 +71,7 @@ class Hills(Level, EventHandlerMixin):
 
     def __init__(self, state=0):
         self.world = self.create_world()
+        self.guy = self.world.NPCs["guy"]
         self.allow_move = True
         self.start_time = datetime.now()
         self.game_time = datetime.now() - self.start_time
@@ -82,7 +87,7 @@ class Hills(Level, EventHandlerMixin):
 
         self._swag_word_list = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!", "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!", "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!", "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!", "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
 
-        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(10)]
+        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(30)]
 
     def create_world(self):
         chars = {
