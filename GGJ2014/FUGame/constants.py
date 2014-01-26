@@ -14,6 +14,7 @@ FU_DIRECTS = {
 FU_LEVELS = ["room", "office"]
 
 FU_CMD_POS = (50, 650)
+FU_CMD_COLOR = (211, 226, 33)
 
 
 #assert all(i.startswith("FU_") for i in __all__)
