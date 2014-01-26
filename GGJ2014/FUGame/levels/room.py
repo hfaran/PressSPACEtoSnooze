@@ -360,6 +360,10 @@ class Room(Level, EventHandlerMixin):
             else:
                 self.world.static["cell"].set_anim("I")
 
+        # CALL TO self._blit #
+        self._blit(screen)
+
+    def _blit(self, screen):
         # Blitting
         screen.blit(self.sky.current_frame, self.sky.pos)
 

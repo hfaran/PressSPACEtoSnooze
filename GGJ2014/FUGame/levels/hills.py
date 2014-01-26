@@ -6,24 +6,24 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 from random import randint
 
 
-class EventHandlerMixin:
+class EventHandlerMixin(BaseEventHandlerMixin):
+
+    def _use(self):
+        raise NotImplementedError
 
     @property
     def event_map(self):
-        _event_map = {
-            K_LEFT: [self._move_character, ("L",)],
-            K_RIGHT: [self._move_character, ("R",)],
-            K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)],
-        }
+        _event_map = dict(self._move_event_map)
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
 
-class Hills(object, EventHandlerMixin):
+class Hills(Level, EventHandlerMixin):
 
     def __init__(self):
         self.world = self.create_world()
@@ -67,4 +67,11 @@ class Hills(object, EventHandlerMixin):
             return False
 
     def update_loop(self, screen, game_clock):
-        raise NotImplementedError
+        self._animate_sprites()
+        self._move_npcs(game_clock)
+
+        # Blitting
+        self._blit(screen)
+
+    def _blit(self, screen):
+        screen.blit(self.world.bg, self.world.pos)
