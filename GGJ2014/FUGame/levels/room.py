@@ -340,6 +340,7 @@ class Room(Level, EventHandlerMixin):
             self._move_npcs(game_clock)
 
             if self.door_rect.colliderect(self.world.NPCs["guy"].col_rect):
+                pygame.mixer.stop()
                 raise utils.NextLevelException("office", 0)
 
             if not self.allow_move:
@@ -409,6 +410,7 @@ class Room(Level, EventHandlerMixin):
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                 self.credits.update_credits()
             if self.credits.end:
+                pygame.mixer.stop()
                 raise utils.NextLevelException("room", 0)
 
         # CALL TO self._blit #
