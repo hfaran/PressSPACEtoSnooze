@@ -9,6 +9,7 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.swagwords import SwagWord
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 aN = 1.0  # TODO make 3.0 dev: 1.0
@@ -23,6 +24,9 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self._space_count += 1
             self._code_text = self.get_code_text()
             self.key.play()
+        # Swagwords
+        if self.state in [2]:
+            self.swag_word = SwagWord(choice(FU_SWAG_WORDS), 128)
 
     @property
     def event_map(self):
@@ -72,6 +76,10 @@ class Computer(Level, EventHandlerMixin):
         self.ambience.set_volume(0.5)
         self.ambience.play(999)
         self.key = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "type.wav"))
+        # Swagwords
+        if self.state in [2]:
+            self.swag_word = SwagWord(choice(FU_SWAG_WORDS), 128)
+
 
     def create_world(self):
         world = World(
@@ -107,9 +115,9 @@ class Computer(Level, EventHandlerMixin):
                 and self.state in [0]:
             raise utils.NextLevelException("office", 0)
         elif secs > self._scroll_delay:
-            if secs > self._scroll_delay * 6:
+            if secs > self._scroll_delay * 6 and self.state not in [2]:
                 self._space_message = "Hey! Stop slacking! Back to work! 'SPACEEEE!!!!!!!!'"
-            elif secs > self._scroll_delay * 4:
+            elif secs > self._scroll_delay * 4 and self.state not in [2]:
                 self._space_message = "You haven't pressed 'SPACE' in a while. Get to work!"
             elif secs > self._scroll_delay * 2:
                 self._space_message = "Press 'SPACE' to Enter Data"
@@ -120,7 +128,8 @@ class Computer(Level, EventHandlerMixin):
 
         screen.blit(self.paper, (0,0))
 
-
+        if self.state in [2]:
+            self.swag_word.draw(screen)
 
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
