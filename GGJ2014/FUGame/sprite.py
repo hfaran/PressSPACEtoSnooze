@@ -39,7 +39,6 @@ class Sprite(object):
         self.is_animating = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
-        self.col_rect = self._get_col_rect()
 
         self.col_pts = col_pts
 
@@ -49,6 +48,7 @@ class Sprite(object):
             self.col_image = pygame.image.load(os.path.join(
                 FU_APATH, "collision", filename + ".png")
             )
+            self.col_rect = self._get_col_rect()
 
         self.use_func = use_func
 
