@@ -31,8 +31,10 @@ FU_CREDITS = [
     "MADISON CALVERT",
     "ANDREA DAGRACA",
     "",
-    "AUDIO",
+    "MUSIC",
     "ALICE SHANG",
+    "",
+    "Sound FX",
     "TREE OF AUDIO",
 
 ]

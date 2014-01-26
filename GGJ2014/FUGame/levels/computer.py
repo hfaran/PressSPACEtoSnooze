@@ -22,6 +22,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.display_cmd = False
             self._space_count += 1
             self._code_text = self.get_code_text()
+            self.key.play()
 
     @property
     def event_map(self):
@@ -65,8 +66,12 @@ class Computer(Level, EventHandlerMixin):
         self._code_rect = pygame.Rect(250, 100, 750, 500)
         self._code_font = pygame.font.SysFont("courier_new", 20)
         pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
-        pygame.mixer.music.set_volume(0.75)
+        pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play(999)
+        self.ambience = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "office_amb.wav"))
+        self.ambience.set_volume(0.5)
+        self.ambience.play(999)
+        self.key = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "type.wav"))
 
     def create_world(self):
         world = World(
