@@ -24,7 +24,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                     s.use_func()
                 elif s.name == "garbageCan" and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
-                    pass
+                            s.is_animating = True
 
 
     @property
@@ -47,7 +47,7 @@ class Office(Level, EventHandlerMixin):
             "guy": Character(
                 filename="main",
                 x=560,
-                y=190,
+                y=90,
                 z=0,
                 col_pts=[],
                 col_x_offset=50,
@@ -55,6 +55,17 @@ class Office(Level, EventHandlerMixin):
                 fps=10,
                 speed=7
             ),
+            "rival": Character(
+                filename="rival",
+                x=1020,
+                y=95,
+                z=100,
+                col_pts=[],
+                col_x_offset=0,
+                col_y_offset=0,
+                fps=10,
+                speed=5
+            )
         }
 
         statics = {
@@ -167,6 +178,8 @@ class Office(Level, EventHandlerMixin):
 
     def update_loop(self, screen, game_clock):
         self._animate_sprites()
+        if self.world.static["garbageCan"].current_frame_num == 0:
+            self.world.static["garbageCan"].is_animating = False
         if not self.sparked:
             self._move_npcs(game_clock)
 
