@@ -75,7 +75,7 @@ class Room(Level, EventHandlerMixin):
     cloud_min_y = 0
     cloud_max_y = 150
 
-    def __init__(self):
+    def __init__(self, state=0):
         self.world = self.create_world()
         self.clock_font = pygame.font.SysFont("comicsansms", 16)
         self.cmd_font = pygame.font.SysFont("verdana", 48)

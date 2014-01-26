@@ -11,6 +11,8 @@ from FUGame.constants import *
 from FUGame.utils import utils
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
+NaN = 8.0
+
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
@@ -30,11 +32,18 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 
 class Computer(Level, EventHandlerMixin):
 
-    def __init__(self):
+    def __init__(self, state=0):
+        """
+        States:
+        0 - You can win by waiting
+        1 - You can't win by waiting and go home afterwards
+        """
         self.world = self.create_world()
+        self.state = state
         # Clock stuff
         self._scroll_delay = 2.0
-        self._wait_to_win_delay = 8.0
+        self._wait_to_win_delay = NaN
+        self._max_lines = NaN * 3.0
         self.disp_time = datetime.now()
         # Press Space to do stuff bar
         self.display_cmd = True
@@ -81,16 +90,19 @@ class Computer(Level, EventHandlerMixin):
         if self.display_cmd:
             self._draw_space(screen)
 
-        if (datetime.now() - self.disp_time).total_seconds() > self._wait_to_win_delay:
+        if (datetime.now() - self.disp_time).total_seconds() > self._wait_to_win_delay \
+                and self.state in [0]:
             raise utils.NextLevelException("office", 0)
         elif (datetime.now() - self.disp_time).total_seconds() > self._scroll_delay:
             if not self.display_cmd:
                 self.display_cmd = True
+        elif self._space_count == self._max_lines:
+            raise utils.NextLevelException("room", 1)
 
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
         # xrange(len(self._code))])
-        return ("; ").join(self._code[26:self._space_count + 26])
+        return ("; ").join(self._code[30:self._space_count + 30])
 
     def _draw_space(self, screen):
         utils.drawText(
