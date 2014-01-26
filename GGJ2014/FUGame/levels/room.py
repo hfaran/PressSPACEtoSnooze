@@ -28,7 +28,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.world.static["button"].set_anim("D")
             self.world.static["button"].nudge(0, 5)
             if self.alarm_on:
-                pygame.mixer.music.stop()
+                self.alarm.stop()
                 self.alarm_on = False
                 self.snooze_count += 1
             return True
@@ -98,8 +98,8 @@ class Room(Level, EventHandlerMixin):
         self.snooze_count = 0
         pygame.mixer.init()
         #pygame.mixer.music.load(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
-        #self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
-        #self.alarm = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
+        self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
+        self.alarm = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
         self.alarm_on = False
 
         self.sky = Sprite(
@@ -382,7 +382,7 @@ class Room(Level, EventHandlerMixin):
                         self.display_cmd = False
                         self.is_waking = True
                         self.guy.set_anim("L")
-                        pygame.mixer.music.stop()
+                        self.alarm.stop()
                         self.alarm_on = False
                     elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
                         self._stop_snooze()
@@ -391,7 +391,7 @@ class Room(Level, EventHandlerMixin):
                         self.display_cmd = True
                         self.cmd = "Press 'SPACE' to Snooze"
                         if not self.alarm_on:
-                            pygame.mixer.music.play()
+                            self.alarm.play(999)
                             self.alarm_on = True
 
                 if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and \
@@ -417,7 +417,7 @@ class Room(Level, EventHandlerMixin):
                             self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
                             self.game_over = True
                         self.msg_count += 1
-                        self.vibrate.play(maxtime=5000)
+                        self.vibrate.play(999, maxtime=5000)
 
 
                 else:
