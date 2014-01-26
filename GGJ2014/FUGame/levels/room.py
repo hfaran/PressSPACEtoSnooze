@@ -107,6 +107,7 @@ class Room(Level, EventHandlerMixin):
         self.ambience.set_volume(0.25)
         self.ambience.play(-1)
         self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
+        self.text_alert = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "text.wav"))
         self.alarm = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
         self.alarm_on = False
 
@@ -425,6 +426,7 @@ class Room(Level, EventHandlerMixin):
                             self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
                             self.game_over = True
                         self.msg_count += 1
+                        self.text_alert.play()
                         self.vibrate.play(999, maxtime=5000)
 
 
