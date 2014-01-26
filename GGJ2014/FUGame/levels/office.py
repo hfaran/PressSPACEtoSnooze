@@ -17,7 +17,15 @@ class EventHandlerMixin(BaseEventHandlerMixin):
     #     }
 
     def _use(self):
-        pass
+
+        for s in self.world.static.values():
+                if s.use_func and s.sprite_rect.colliderect(
+                        self.world.NPCs["guy"].sprite_rect):
+                    s.use_func()
+                elif s.name == "garbageCan" and s.sprite_rect.colliderect(
+                        self.world.NPCs["guy"].sprite_rect):
+                    pass
+
 
     @property
     def event_map(self):
@@ -161,7 +169,7 @@ class Office(Level, EventHandlerMixin):
         self._move_npcs(game_clock)
 
         # Events
-        self.__check_sparks_collision()
+        self.__check_sparks_collision()s
 
         # Blitting
         self._blit(screen)

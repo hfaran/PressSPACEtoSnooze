@@ -11,7 +11,7 @@ FU_DIRECTS = {
     "R": (1,  0),
 }
 
-FU_LEVELS = ["room", "office", "hill"]
+FU_LEVELS = ["room", "office", "hills"]
 
 FU_CMD_POS = (50, 650)
 FU_CMD_COLOR = (211, 226, 33)
