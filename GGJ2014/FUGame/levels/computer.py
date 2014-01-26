@@ -11,8 +11,8 @@ from FUGame.constants import *
 from FUGame.utils import utils
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
-aN = 3.0  # TODO make 3.0 dev: 1.0
-NaN = aN * 4.0
+aN = 1.0  # TODO make 3.0 dev: 1.0
+NaN = aN * 8.0
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
@@ -43,7 +43,7 @@ class Computer(Level, EventHandlerMixin):
         # Clock stuff
         self._scroll_delay = aN
         self._wait_to_win_delay = NaN
-        self._max_lines = NaN * 3.0
+        self._max_lines = NaN * 2.0
         self.disp_time = datetime.now()
         # Press Space to do stuff bar
         self.display_cmd = True
@@ -102,11 +102,11 @@ class Computer(Level, EventHandlerMixin):
                 and self.state in [0]:
             raise utils.NextLevelException("office", 0)
         elif secs > self._scroll_delay:
-            if secs > self._scroll_delay * 3:
+            if secs > self._scroll_delay * 6:
                 self._space_message = "Hey! Stop slacking! Back to work! 'SPACEEEE!!!!!!!!'"
-            elif secs > self._scroll_delay * 2:
+            elif secs > self._scroll_delay * 4:
                 self._space_message = "You haven't pressed 'SPACE' in a while. Get to work!"
-            elif secs > self._scroll_delay * 1:
+            elif secs > self._scroll_delay * 2:
                 self._space_message = "Press 'SPACE' to Work"
             if not self.display_cmd:
                 self.display_cmd = True
