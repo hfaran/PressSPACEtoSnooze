@@ -14,8 +14,19 @@ from random import randint
 
 class EventHandlerMixin(BaseEventHandlerMixin):
     def _use(self):
+<<<<<<< HEAD
         if self.dead:
             self.credits.speed += 5
+=======
+        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
+        for s in self.world.static.values():
+            if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
+                s.use_func()
+                break
+            elif s.name == "bigShroom" and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
+                s.is_animating = True
+                break
+>>>>>>> Sprites added
 
     @property
     def event_map(self):
@@ -45,7 +56,7 @@ class Hills(Level, EventHandlerMixin):
                 filename="main",
                 x=120,
                 y=260,
-                z=0,
+                z=1,
                 col_pts=[],
                 col_x_offset=50,
                 col_y_offset=117,
@@ -54,22 +65,115 @@ class Hills(Level, EventHandlerMixin):
             ),
         }
         statics = {
-
+            "smallShroom": Sprite(
+                filename="smallShroom",
+                x=277,
+                y=510,
+                z=0,
+                col_pts=[(12, 56), (31, 64), (54, 67), (77, 68), (95, 65), (115, 60), (127, 54), (128, 43), (17, 42),
+                         (64, 68), (64, 82), (65, 95), (79, 96), (76, 79), (74, 66)
+                ],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+            "bigShroom": Sprite(
+                filename="bigShroom",
+                x=325,
+                y=458,
+                # x=0,
+                # y=0,
+                z=100,
+                col_pts=[(31, 95), (59, 107), (107, 115), (160, 117), (202, 109), (234, 97), (264, 79), (271, 73),
+                         (258, 45), (217, 49), (172, 50), (120, 53), (97, 51), (72, 48), (64, 44), (48, 63)
+                ],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=15
+            ),
+            "hellGate": Sprite(
+                filename="hellGate",
+                x=60,
+                y=115,
+                z=-100,
+                col_pts=[(50, 234), (73, 230), (87, 225), (120, 217), (152, 201), (176, 190), (203, 171), (200, 158),
+                         (190, 133), (42, 175)
+                ],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=10
+            ),
+            "sunFace": Sprite(
+                filename="sunFace",
+                x=355,
+                y=68,
+                z=-2500,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=10
+            ),
+            "unicornMan": Sprite(
+                filename="unicornMan",
+                x=500,
+                y=200,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=100
+            ),
+            "mountain": Sprite(
+                filename="mountain",
+                x=0,
+                y=0,
+                z=-1000,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+            ),
+            "rainbowFoam": Sprite(
+                filename="rainbowFoam",
+                x=0,
+                y=0,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=5
+            ),
+            "shine": Sprite(
+                filename="shine",
+                x=0,
+                y=0,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=5
+            )
         }
         world = World(
             level_id="hills",
-            bg_filename="hills_bg",
+            bg_filename="happyHills_bg",
             static=statics,
             NPCs=chars,
             col_pts=[(65, 420), (107, 406), (127, 367), (159, 336), (187, 306), (224, 288), (253, 271), (281, 254),
                      (310, 244), (386, 214), (437, 201), (472, 200), (539, 184), (619, 188), (621, 231), (617, 257),
                      (626, 292), (626, 332), (626, 356), (626, 404), (626, 429), (626, 461), (626, 501), (626, 557),
-                     (626, 578), (626, 600), (626, 622), (626, 629), (626, 637)],
+                     (626, 578), (626, 600), (626, 622), (626, 629), (626, 637), (340, 606), (340, 580), (359, 580),
+                     (357, 606), (451, 607), (457, 575), (456, 595), (483, 576), (486, 584), (491, 603), (468, 618),
+                     (459, 573), (482, 572), (469, 552)],
             x=0,
             y=0
         )
 
         world.NPCs["guy"].set_anim("F")
+        world.static["hellGate"].is_animating = True
+        world.static["smallShroom"].is_animating = True
+        world.static["unicornMan"].is_animating = True
+        world.static["sunFace"].is_animating = True
+        world.static["rainbowFoam"].is_animating = True
+        world.static["shine"].is_animating = True
         return world
 
     def handle_events(self, event):
