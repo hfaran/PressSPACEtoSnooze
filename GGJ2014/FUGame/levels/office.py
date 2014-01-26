@@ -47,6 +47,7 @@ class Office(Level, EventHandlerMixin):
         self.credits = self.Credits()
         self.coffee_spilt = False
         pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
+        pygame.mixer.music.set_volume(0.75)
         pygame.mixer.music.play(999)
 
     def create_world(self):
