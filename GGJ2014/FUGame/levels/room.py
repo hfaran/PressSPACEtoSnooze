@@ -314,10 +314,7 @@ class Room(object, EventHandlerMixin):
         self.world.NPCs["guy"].direction = "L"
 
     def update_loop(self, screen, game_clock):
-        # Create character collision box thing
-        sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
-        sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
-
+        """"""
         for s in self.world.sprites:
             if s.is_animating is True:
                 self._animate(s)
@@ -331,14 +328,14 @@ class Room(object, EventHandlerMixin):
                     s.set_pos(*s.old_pos)
                 self._animate(s)
 
-        if self.char_in_bed(sprite_rect):
+        if self.char_in_bed(self.world.NPCs["guy"].col_rect):
             self.world.NPCs["guy"].set_z(self.world.static["bed"].z_index + 1
                                          - self.world.NPCs["guy"].pos[1]
                                          - self.world.NPCs["guy"].current_frame.get_height())
         else:
             self.world.NPCs["guy"].set_z(0)
 
-        if self.door_rect.colliderect(sprite_rect):
+        if self.door_rect.colliderect(self.world.NPCs["guy"].col_rect):
             raise utils.NextLevelException("office", 0)
 
         self.game_time = datetime.now() - self.start_time
