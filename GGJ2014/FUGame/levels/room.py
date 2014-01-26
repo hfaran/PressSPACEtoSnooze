@@ -37,8 +37,10 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                     break
                 elif s.name == "chair" and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
-                    if s.pos[1] - 50 > 200:
+                    if self.world.NPCs["guy"].pos[1] > s.pos[1] and s.pos[1] - 50 > 200:
                         s.nudge(0, -50)
+                    elif self.world.NPCs["guy"].pos[1] < s.pos[1] and s.pos[1] - 50 < 330:
+                        s.nudge(0, 50)
                     break
 
     def _stop_snooze(self):
