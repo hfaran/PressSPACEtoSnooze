@@ -61,7 +61,7 @@ class Game(object):
 
     def main(self):
         # Create initial level
-        self.current_level = self.levels[1]
+        self.current_level = self.levels[0]
         self.level = self.create_level(self.current_level)
         # Game loop
         while True:
