@@ -69,7 +69,7 @@ class Computer(Level, EventHandlerMixin):
         self._code_text = self.get_code_text()
         self._code_rect = pygame.Rect(250, 100, 750, 500)
         self._code_font = pygame.font.SysFont("courier_new", 20)
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
+        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.ogg"))
         pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play(999)
         self.ambience = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "office_amb.wav"))
@@ -124,6 +124,8 @@ class Computer(Level, EventHandlerMixin):
             if not self.display_cmd:
                 self.display_cmd = True
         elif self._space_count == self._max_lines:
+            pygame.mixer.stop()
+            pygame.mixer.music.stop()
             raise utils.NextLevelException("room", 1)
 
         screen.blit(self.paper, (0,0))

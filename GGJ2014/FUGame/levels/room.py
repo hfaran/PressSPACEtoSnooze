@@ -97,10 +97,10 @@ class Room(Level, EventHandlerMixin):
         self.credits = self.Credits()
         self.snooze_count = 0
         pygame.mixer.init()
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "bedroomfinal.wav"))
+        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "bedroomfinal.ogg"))
         pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play()
-        pygame.mixer.music.queue(os.path.join(FU_APATH, "music", "bedroomfinal.wav"))
+        pygame.mixer.music.queue(os.path.join(FU_APATH, "music", "bedroomfinal.ogg"))
         pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)
         self.ambience = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "room_amb.wav"))
