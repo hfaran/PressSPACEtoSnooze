@@ -6,13 +6,14 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 from random import randint
 from datetime import datetime
 from time import sleep
 
 
-class EventHandlerMixin:
+class EventHandlerMixin(BaseEventHandlerMixin):
 
     def _move_character(self, direction):
         if self.allow_move:
@@ -36,7 +37,7 @@ class EventHandlerMixin:
                     s.use_func()
                 elif s.name == "chair" and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
-                    if s.pos[1]-50 > 200:
+                    if s.pos[1] - 50 > 200:
                         s.nudge(0, -50)
 
     def _stop_snooze(self):
@@ -49,13 +50,8 @@ class EventHandlerMixin:
 
     @property
     def event_map(self):
-        _event_map = {
-            K_LEFT: [self._move_character, ("L",)],
-            K_RIGHT: [self._move_character, ("R",)],
-            K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)],
-            K_SPACE: [self._use, ()]
-        }
+        _event_map = dict(self._move_event_map)
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
     @property
@@ -66,7 +62,7 @@ class EventHandlerMixin:
         return _event_map
 
 
-class Room(object, EventHandlerMixin):
+class Room(Level, EventHandlerMixin):
     cloud_min_x = 200
     cloud_max_x = 300
     cloud_min_y = 0
@@ -315,18 +311,8 @@ class Room(object, EventHandlerMixin):
 
     def update_loop(self, screen, game_clock):
         """"""
-        for s in self.world.sprites:
-            if s.is_animating is True:
-                self._animate(s)
-
-        for s in self.world.NPCs.values():
-            # Movement
-            if s.is_moving:
-                if not self.world.check_colliding(s):
-                    s.move(game_clock.get_fps())
-                else:
-                    s.set_pos(*s.old_pos)
-                self._animate(s)
+        self._animate_sprites()
+        self._move_npcs(game_clock)
 
         if self.char_in_bed(self.world.NPCs["guy"].col_rect):
             self.world.NPCs["guy"].set_z(self.world.static["bed"].z_index + 1
@@ -374,6 +360,10 @@ class Room(object, EventHandlerMixin):
             else:
                 self.world.static["cell"].set_anim("I")
 
+        # CALL TO self._blit #
+        self._blit(screen)
+
+    def _blit(self, screen):
         # Blitting
         screen.blit(self.sky.current_frame, self.sky.pos)
 
@@ -398,9 +388,3 @@ class Room(object, EventHandlerMixin):
                           randint(self.cloud_min_y, self.cloud_max_y))
             else:
                 c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
-
-    def _animate(self, s):
-        # Animation
-        s.update_dt()
-        if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
