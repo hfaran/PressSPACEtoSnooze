@@ -14,10 +14,8 @@ from random import randint
 
 class EventHandlerMixin(BaseEventHandlerMixin):
     def _use(self):
-<<<<<<< HEAD
         if self.dead:
             self.credits.speed += 5
-=======
         self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
@@ -26,7 +24,6 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             elif s.name == "bigShroom" and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.is_animating = True
                 break
->>>>>>> Sprites added
 
     @property
     def event_map(self):
