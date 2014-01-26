@@ -1,4 +1,7 @@
 from pygame.locals import *
+from FUGame.constants import *
+import pygame
+from datetime import datetime
 
 
 class BaseEventHandlerMixin:
@@ -26,11 +29,12 @@ class Level(object):
 
     """Base class for Levels"""
 
-    def _animate(self, s):
+    def _animate(self, s, anim_once=False):
         # Animation
         s.update_dt()
         if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
+            if s.next_frame() and anim_once:
+                s.is_animating = False
 
     def _animate_sprites(self):
         for s in self.world.unsorted_sprites:
@@ -46,3 +50,42 @@ class Level(object):
                 else:
                     s.set_pos(*s.old_pos)
                 self._animate(s)
+
+    class Credits:
+        def __init__(self):
+            self.credit_font = pygame.font.SysFont("verdana", 24)
+            self.alpha = 0
+            self.texts = list(reversed(
+                [self.credit_font.render(FU_CREDITS[i], True, (255, 255, 255)) for i in xrange(len(FU_CREDITS))]))
+            self.rect = pygame.Surface((FU_WIDTH, FU_HEIGHT))
+            self.rect.fill((0, 0, 0))
+            self.rect.set_alpha(self.alpha)
+            self.credits_pos = ((FU_WIDTH/2, FU_HEIGHT * 1.75))
+            self.texts_pos = self._texts_positions()
+            self.speed = 3
+            self.fps = 30
+            self.spacing = 40
+            self.lastdt = datetime.now()
+            self.update_dt()
+
+        def update_dt(self):
+            self.dt = datetime.now() - self.lastdt
+
+        def darken(self):
+            if self.alpha <= 250:
+                self.alpha += self.speed
+                self.rect.set_alpha(self.alpha)
+
+        def scroll_credits(self):
+            self.credits_pos = self.credits_pos[0], self.credits_pos[1] - self.speed
+            self.texts_pos = self._texts_positions()
+
+        def update_credits(self):
+            self.scroll_credits()
+            self.darken()
+            self.lastdt = datetime.now()
+
+        def _texts_positions(self):
+            return [
+                (self.credits_pos[0] - self.texts[i].get_width()/2, self.credits_pos[1] - 40*i)
+                for i in xrange(len(FU_CREDITS))]

@@ -16,5 +16,25 @@ FU_LEVELS = ["room", "office", "hill"]
 FU_CMD_POS = (50, 650)
 FU_CMD_COLOR = (211, 226, 33)
 
+FU_CREDITS = [
+    "CREDITS",
+    "PROGRAMMERS",
+    "PHATTRICK TRAN",
+    "DYLAN DUMESNIL",
+    "HAMZA FARAN",
+    "",
+    "STORY CONSULTANT",
+    "R. MORGAN SLADE",
+    "",
+    "GRAPHICS",
+    "MADISON CALVERT",
+    "ANDREA DAGRACA",
+    "",
+    "AUDIO",
+    "ALICE SHANG",
+    "TREE OF AUDIO",
+
+]
+
 
 #assert all(i.startswith("FU_") for i in __all__)
