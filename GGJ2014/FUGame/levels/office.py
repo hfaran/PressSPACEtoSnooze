@@ -39,6 +39,7 @@ class Office(Level, EventHandlerMixin):
         self.world = self.create_world()
 
         self.allow_move = True
+        self.sparked = False
 
     def create_world(self):
         # Create objects
@@ -166,10 +167,13 @@ class Office(Level, EventHandlerMixin):
 
     def update_loop(self, screen, game_clock):
         self._animate_sprites()
-        self._move_npcs(game_clock)
+        if not self.sparked:
+            self._move_npcs(game_clock)
 
-        # Events
-        self.__check_sparks_collision()
+            # Events
+            self.__check_sparks_collision()
+        else:
+            self._animate(self.world.NPCs["guy"], anim_once=False)
 
         # Blitting
         self._blit(screen)
@@ -183,5 +187,7 @@ class Office(Level, EventHandlerMixin):
         # colliding with sparks
         if self.world.check_col(
                 self.world.static["sparks"], self.world.NPCs["guy"]):
-            self.world.NPCs["guy"].set_anim("SD")
-            self._animate(self.world.NPCs["guy"], anim_once=True)
+            self.world.NPCs["guy"].fps = 8
+            self.world.NPCs["guy"].set_anim("E")
+            self.sparked = True
+            self.allow_move = False
