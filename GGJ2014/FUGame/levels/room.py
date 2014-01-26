@@ -362,7 +362,7 @@ class Room(Level, EventHandlerMixin):
 
                 if self.door_rect.colliderect(self.guy.col_rect):
                     pygame.mixer.stop()
-                    raise utils.NextLevelException("office", 0)
+                    raise utils.NextLevelException("computer", 0)
 
                 if not self.allow_move:
                     if self.guy.pos[0] < 425:
