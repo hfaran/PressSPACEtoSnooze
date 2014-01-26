@@ -33,8 +33,10 @@ class Level(object):
         # Animation
         s.update_dt()
         if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            if s.next_frame() and anim_once:
-                s.is_animating = False
+            if not anim_once:
+                s.next_frame()
+            elif anim_once and s.current_frame_num + 1 < len(s.anims[s.current_anim]):
+                s.is_animating = s.next_frame()
 
     def _animate_sprites(self):
         for s in self.world.unsorted_sprites:
