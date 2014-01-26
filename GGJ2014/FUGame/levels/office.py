@@ -166,6 +166,26 @@ class Office(Level, EventHandlerMixin):
                 col_pts=[],
                 col_x_offset=None,
                 col_y_offset=None
+            ),
+
+            "elevatorR": Sprite(
+                filename="elevatorR",
+                x=563,
+                y=32,
+                z=1,
+                col_pts=[(40, 175)],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
+            "elevatorL": Sprite(
+                filename="elevatorL",
+                x=638,
+                y=32,
+                z=1,
+                col_pts=[(40, 175)],
+                col_x_offset=None,
+                col_y_offset=None
             )
         }
 
@@ -269,7 +289,8 @@ class Office(Level, EventHandlerMixin):
     def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
-            screen.blit(s.current_frame, s.pos)
+            if not (s.name == "elevatorR" or s.name == "elevatorL") or not self.door_open:
+                screen.blit(s.current_frame, s.pos)
 
         if self.sparked:
             screen.blit(self.credits.rect, (0, 0))
