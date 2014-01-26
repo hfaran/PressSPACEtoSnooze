@@ -14,7 +14,8 @@ from random import randint
 
 class EventHandlerMixin(BaseEventHandlerMixin):
     def _use(self):
-        raise NotImplementedError
+        if self.dead:
+            self.credits.speed += 5
 
     @property
     def event_map(self):
@@ -30,6 +31,9 @@ class Hills(Level, EventHandlerMixin):
         self.start_time = datetime.now()
         self.game_time = datetime.now() - self.start_time
         self.dead = False
+        self.cmd = "Press 'SPACE' to Speed Up"
+        self.display_cmd = False
+        self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.credits = self.Credits()
         pygame.mixer.music.load(os.path.join(FU_APATH, "music", "manicfrolic.wav"))
         pygame.mixer.music.set_volume(0.75)
@@ -89,6 +93,8 @@ class Hills(Level, EventHandlerMixin):
                 self.dead = True
                 pass
             else:
+                self.cmd = "Press 'SPACE' to Speed Up"
+                self.display_cmd = True
                 self.credits.update_dt()
                 if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                     self.credits.update_credits()
@@ -109,5 +115,10 @@ class Hills(Level, EventHandlerMixin):
             screen.fill((0, 0, 0))
             screen.blit(self.credits.rect, (0, 0))
             [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+
+
+        if self.display_cmd:
+            screen.blit(
+                self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
 

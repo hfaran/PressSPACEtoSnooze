@@ -20,7 +20,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             return True
 
     def _use(self):
-        if self.display_cmd:
+        if self.display_cmd and not self.game_over:
             self.display_cmd = False
             self.snooze_time = datetime.now()
             self.guy.set_anim("SNZ")
@@ -32,6 +32,8 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                 self.alarm_on = False
                 self.snooze_count += 1
             return True
+        elif self.game_over:
+            self.credits.speed += 5
         else:
             self.guy.set_anim("{}S".format(self.guy.direction))
             for s in self.world.static.values():
@@ -428,6 +430,8 @@ class Room(Level, EventHandlerMixin):
             self.guy.set_z(0)
 
         if self.game_over:
+            self.cmd = "Press 'SPACE' to Speed Up"
+            self.display_cmd = True
             self.credits.update_dt()
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                 self.credits.update_credits()
@@ -452,10 +456,6 @@ class Room(Level, EventHandlerMixin):
             if s.name == "alarmClock":
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
 
-        if self.display_cmd:
-            screen.blit(
-                self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
-
         screen.blit(self.phone.image, self.phone.pos)
         screen.blit(self.phone.sender_font.render(self.phone.sender, True, (50, 50, 50)), self.phone.sender_pos)
         utils.drawText(screen, self.phone.message, (50, 50, 50),
@@ -471,6 +471,10 @@ class Room(Level, EventHandlerMixin):
         if self.game_over:
             screen.blit(self.credits.rect, (0, 0))
             [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+
+        if self.display_cmd:
+            screen.blit(
+                self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
     def update_clouds(self):
         for c in self.clouds:

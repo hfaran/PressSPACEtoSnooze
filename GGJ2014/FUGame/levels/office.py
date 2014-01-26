@@ -34,6 +34,8 @@ class EventHandlerMixin(BaseEventHandlerMixin):
         if self.coffee_spilt and self.check_rival_collision():
             self.door_open = False
             self.world.NPCs["rival"].is_animating = True
+        elif self.sparked:
+            self.credits.speed += 5
 
 
     @property
@@ -217,6 +219,8 @@ class Office(Level, EventHandlerMixin):
             self.__check_chair_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
+            self.cmd = "Press 'SPACE' to Speed Up"
+            self.display_cmd = True
             self.credits.update_dt()
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                 self.credits.update_credits()
@@ -254,6 +258,8 @@ class Office(Level, EventHandlerMixin):
                     self.display_cmd = True
                 else:
                     self.display_cmd = False
+            elif self.sparked:
+                self.display_cmd = True
             else:
                 self.display_cmd = False
 
