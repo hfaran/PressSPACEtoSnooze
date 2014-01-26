@@ -96,7 +96,7 @@ class Room(object, EventHandlerMixin):
             ) for i in xrange(1, 5)
         ]
 
-        self.door_rect = pygame.Rect(75, 365, 5, 130)
+        self.door_rect = pygame.Rect(75, 365, 100, 130)
 
         self.snooze_time = datetime.now()
         self.start_time = datetime.now()
@@ -123,7 +123,7 @@ class Room(object, EventHandlerMixin):
                 col_x_offset=50,
                 col_y_offset=117,
                 fps=4,
-                speed=5
+                speed=0.2
             ),
         }
         statics = {
@@ -275,7 +275,7 @@ class Room(object, EventHandlerMixin):
         self.world.NPCs["guy"].is_moving = True
         self.world.NPCs["guy"].direction = "L"
 
-    def update_loop(self, screen):
+    def update_loop(self, screen, game_clock):
         # Create character collision box thing
         sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
         sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
@@ -288,7 +288,7 @@ class Room(object, EventHandlerMixin):
             # Movement
             if s.is_moving:
                 if not self.world.check_colliding(s):
-                    s.move()
+                    s.move(game_clock.get_fps())
                 else:
                     s.set_pos(*s.old_pos)
                 self._animate(s)

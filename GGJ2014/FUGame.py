@@ -27,14 +27,15 @@ class Game(object):
             (FU_WIDTH, FU_HEIGHT),
         )
         pygame.display.set_caption('FUGame')
+        self.clock = pygame.time.Clock()
 
         # Levels
         self.levels = FU_LEVELS
 
     def loop(self):
-        bg = pygame.Surface(self.screen.get_size())
         self.screen.fill((0, 0, 0))
-        self.level.update_loop(self.screen)
+        self.clock.tick(FU_FRAME_RATE)
+        self.level.update_loop(self.screen, self.clock)
         # self.screen.blit(self.level.world.bg, self.level.world.pos)
         # for s in self.level.world.sprites:
         #     self.screen.blit(s.current_frame, s.pos)
