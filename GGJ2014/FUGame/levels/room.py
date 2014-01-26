@@ -37,7 +37,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                     s.use_func()
                 elif s.name == "chair" and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
-                    if s.pos[1]-50 > 200:
+                    if s.pos[1] - 50 > 200:
                         s.nudge(0, -50)
 
     def _stop_snooze(self):
@@ -311,18 +311,8 @@ class Room(Level, EventHandlerMixin):
 
     def update_loop(self, screen, game_clock):
         """"""
-        for s in self.world.sprites:
-            if s.is_animating is True:
-                self._animate(s)
-
-        for s in self.world.NPCs.values():
-            # Movement
-            if s.is_moving:
-                if not self.world.check_colliding(s):
-                    s.move(game_clock.get_fps())
-                else:
-                    s.set_pos(*s.old_pos)
-                self._animate(s)
+        self._animate_sprites()
+        self._move_npcs(game_clock)
 
         if self.char_in_bed(self.world.NPCs["guy"].col_rect):
             self.world.NPCs["guy"].set_z(self.world.static["bed"].z_index + 1
@@ -394,5 +384,3 @@ class Room(Level, EventHandlerMixin):
                           randint(self.cloud_min_y, self.cloud_max_y))
             else:
                 c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
-
-
