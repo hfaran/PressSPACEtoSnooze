@@ -6,13 +6,14 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 from random import randint
 from datetime import datetime
 from time import sleep
 
 
-class EventHandlerMixin:
+class EventHandlerMixin(BaseEventHandlerMixin):
 
     def _move_character(self, direction):
         if self.allow_move:
@@ -49,13 +50,8 @@ class EventHandlerMixin:
 
     @property
     def event_map(self):
-        _event_map = {
-            K_LEFT: [self._move_character, ("L",)],
-            K_RIGHT: [self._move_character, ("R",)],
-            K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)],
-            K_SPACE: [self._use, ()]
-        }
+        _event_map = dict(self._move_event_map)
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
     @property
@@ -66,7 +62,7 @@ class EventHandlerMixin:
         return _event_map
 
 
-class Room(object, EventHandlerMixin):
+class Room(Level, EventHandlerMixin):
     cloud_min_x = 200
     cloud_max_x = 300
     cloud_min_y = 0
@@ -399,8 +395,4 @@ class Room(object, EventHandlerMixin):
             else:
                 c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
 
-    def _animate(self, s):
-        # Animation
-        s.update_dt()
-        if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
+
