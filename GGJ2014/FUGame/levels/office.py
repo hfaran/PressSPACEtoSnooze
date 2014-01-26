@@ -9,7 +9,6 @@ from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
-
     # @property
     # def seqd(self):
     #     """Sequence dict"""
@@ -18,10 +17,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
     #     }
 
     def _use(self):
-        if self.world.check_col(
-                self.world.static["officeChairMain"], self.world.NPCs["guy"]):
-            self.world.NPCs["guy"].set_anim("SD")
-            self.world.NPCs["guy"].is_animating = True
+        pass
 
     @property
     def event_map(self):
@@ -31,7 +27,6 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 
 
 class Office(Level, EventHandlerMixin):
-
     def __init__(self):
         self.world = self.create_world()
 
@@ -59,10 +54,10 @@ class Office(Level, EventHandlerMixin):
                 x=288,
                 y=278,
                 z=0,
-                col_pts=[(0, 0), (20, 0), (40, 0), (60, 0), (80, 0), (100, 0), (120, 0), (132, 0),
-                         (0, 20), (0, 40), (0, 60), (0, 80), (0, 100), (0, 109),
+                col_pts=[(60, 0), (80, 0), (100, 0), (120, 0), (132, 0),
+                         (0, 80), (0, 100), (0, 109),
                          (20, 109), (40, 109), (60, 109), (80, 109), (100, 109), (120, 109), (132, 109),
-                         (132, 20), (132, 40), (132, 60), (132, 80), (132, 100), (132, 109)],
+                         (132, 80), (132, 100), (132, 109)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -73,9 +68,9 @@ class Office(Level, EventHandlerMixin):
                 y=228,
                 z=0,
                 col_pts=[(0, 0), (30, 0), (60, 0), (90, 0), (120, 0), (150, 0), (172, 0), (172, 166),
-                    (0, 30),  (0, 60), (0, 90),  (0, 120),  (0, 150), (0, 166),
-                    (172, 30), (172, 60), (172, 90), (172, 120), (172, 150),
-                    (0, 166), (30, 166), (60, 166), (90, 166), (120, 166), (150, 166)
+                         (0, 30), (0, 60), (0, 90), (0, 120), (0, 150), (0, 166),
+                         (172, 30), (172, 60), (172, 90), (172, 120), (172, 150),
+                         (0, 166), (30, 166), (60, 166), (90, 166), (120, 166), (150, 166)
                 ],
                 col_x_offset=None,
                 col_y_offset=None,
@@ -165,6 +160,9 @@ class Office(Level, EventHandlerMixin):
         self._animate_sprites()
         self._move_npcs(game_clock)
 
+        # Events
+        self.__check_sparks_collision()
+
         # Blitting
         self._blit(screen)
 
@@ -172,3 +170,10 @@ class Office(Level, EventHandlerMixin):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
             screen.blit(s.current_frame, s.pos)
+
+    def __check_sparks_collision(self):
+        # colliding with sparks
+        if self.world.check_col(
+                self.world.static["sparks"], self.world.NPCs["guy"]):
+            self.world.NPCs["guy"].set_anim("SD")
+            self._animate(self.world.NPCs["guy"], anim_once=True)
