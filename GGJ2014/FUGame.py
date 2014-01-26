@@ -32,6 +32,8 @@ class Game(object):
         self.levels = FU_LEVELS
 
     def loop(self):
+        bg = pygame.Surface(self.screen.get_size())
+        self.screen.fill((0, 0, 0))
         self.level.update_loop(self.screen)
         # self.screen.blit(self.level.world.bg, self.level.world.pos)
         # for s in self.level.world.sprites:
