@@ -5,31 +5,28 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 
-class EventHandlerMixin:
+class EventHandlerMixin(BaseEventHandlerMixin):
 
-    def _move_character(self, direction):
-        self.world.NPCs["guy"].is_moving = True
-        self.world.NPCs["guy"].direction = direction
+    def _use(self):
+        raise NotImplementedError
 
     @property
     def event_map(self):
-        _event_map = {
-            K_LEFT: [self._move_character, ("L",)],
-            K_RIGHT: [self._move_character, ("R",)],
-            K_UP: [self._move_character, ("B",)],
-            K_DOWN: [self._move_character, ("F",)]
-        }
+        _event_map = dict(self._move_event_map)
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
 
-class Office(object, EventHandlerMixin):
+class Office(Level, EventHandlerMixin):
 
     def __init__(self):
-        self.world = self.create_world
+        self.world = self.create_world()
 
-    @property
+        self.allow_move = True
+
     def create_world(self):
         # Create objects
         chars = {
@@ -141,32 +138,13 @@ class Office(object, EventHandlerMixin):
             return False
 
     def update_loop(self, screen, game_clock):
-        # Create character collision box thing
-        sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
-        sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
+        self._animate_sprites()
+        self._move_npcs(game_clock)
 
-        for s in self.world.sprites:
-            if s.is_animating is True:
-                self._animate(s)
+        # Blitting
+        self._blit(screen)
 
-        for s in self.world.NPCs.values():
-            # Movement
-            if s.is_moving:
-                if not self.world.check_colliding(s):
-                    s.move(game_clock.get_fps())
-                else:
-                    s.set_pos(*s.old_pos)
-                self._animate(s)
-
-        #Blitting
+    def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
-
         for s in self.world.sprites:
             screen.blit(s.current_frame, s.pos)
-
-
-    def _animate(self, s):
-        # Animation
-        s.update_dt()
-        if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
