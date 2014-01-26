@@ -10,8 +10,18 @@ from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
+    # @property
+    # def seqd(self):
+    #     """Sequence dict"""
+    #     return {
+    #         "sit_chair":
+    #     }
+
     def _use(self):
-        raise NotImplementedError
+        if self.world.check_col(
+                self.world.static["officeChairMain"], self.world.NPCs["guy"]):
+            self.world.NPCs["guy"].set_anim("SD")
+            self.world.NPCs["guy"].is_animating = True
 
     @property
     def event_map(self):
