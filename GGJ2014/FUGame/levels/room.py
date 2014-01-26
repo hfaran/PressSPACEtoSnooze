@@ -20,7 +20,7 @@ class EventHandlerMixin:
             self.world.NPCs["guy"].direction = direction
             return True
 
-    def _snooze(self):
+    def _use(self):
         if self.display_cmd:
             self.display_cmd = False
             self.snooze_time = datetime.now()
@@ -29,6 +29,11 @@ class EventHandlerMixin:
             self.world.static["button"].set_anim("D")
             self.world.static["button"].nudge(0, 5)
             return True
+        else:
+            for s in self.world.static.values():
+                if s.use_func and s.sprite_rect.colliderect(
+                        self.world.NPCs["guy"].sprite_rect):
+                    s.use_func()
 
     def _stop_snooze(self):
         if self.world.NPCs["guy"].current_anim == "SNZ":
@@ -45,7 +50,7 @@ class EventHandlerMixin:
             K_RIGHT: [self._move_character, ("R",)],
             K_UP: [self._move_character, ("B",)],
             K_DOWN: [self._move_character, ("F",)],
-            K_SPACE: [self._snooze, ()]
+            K_SPACE: [self._use, ()]
         }
         return _event_map
 
@@ -85,7 +90,7 @@ class Room(object, EventHandlerMixin):
 
         self.clouds = [
             Sprite(
-                filename="cloud"+str(i),
+                filename="cloud" + str(i),
                 x=randint(470, 800),
                 y=randint(self.cloud_min_y, self.cloud_max_y),
                 z=0,
@@ -102,10 +107,11 @@ class Room(object, EventHandlerMixin):
         self.start_time = datetime.now()
         self.game_time = datetime.now() - self.start_time
         self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
-        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
+        self.clock_text = self.clock_font.render(
+            self.clock_time, True, (0, 255, 0))
 
     def seconds_to_time(self, secs):
-        secs = secs + 51 + 5*60
+        secs = secs + 51 + 5 * 60
         hours = int(secs / 60)
         mins = int(secs % 60)
 
@@ -132,8 +138,13 @@ class Room(object, EventHandlerMixin):
                 x=1075,
                 y=210,
                 z=0,
-                col_pts=[(4, 61), (17, 120), (27, 171), (40, 221), (56, 294), (69, 56), (120, 293), (182, 293),
-                         (131, 56)],
+                col_pts=[(
+                    4, 61), (
+                    17, 120), (
+                    27, 171), (
+                    40, 221), (
+                    56, 294), (69, 56), (120, 293), (182, 293),
+                    (131, 56)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -142,7 +153,8 @@ class Room(object, EventHandlerMixin):
                 x=950,
                 y=330,
                 z=0,
-                col_pts=[(5, 80), (36, 112), (75, 120), (110, 105), (110, 70), (85, 30), (25, 55), (50, 30)],
+                col_pts=[(5, 80), (36, 112), (75, 120), (110, 105),
+                         (110, 70), (85, 30), (25, 55), (50, 30)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -151,7 +163,8 @@ class Room(object, EventHandlerMixin):
                 x=420,
                 y=169,
                 z=0,
-                col_pts=[(20, 110), (65, 110), (115, 110), (105, 40), (20, 40), (15, 55)],
+                col_pts=[(20, 110), (65, 110), (115, 110),
+                         (105, 40), (20, 40), (15, 55)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -188,9 +201,17 @@ class Room(object, EventHandlerMixin):
                 x=545,
                 y=170,
                 z=0,
-                col_pts=[(30, 310), (80, 310), (130, 310), (180, 310), (230, 310), (250, 310), (5, 265), (65, 265),
-                         (125, 265), (185, 265), (245, 265), (270, 265), (0, 100), (65, 100),
-                         (125, 100), (185, 100), (245, 100), (270, 100), (10, 60), (235, 60)],
+                col_pts=[(
+                    30, 310), (
+                    80, 310), (
+                    130, 310), (
+                    180, 310), (
+                    230, 310), (250, 310), (5, 265), (65, 265),
+                    (125, 265), (185, 265), (245,
+                                             265), (
+                        270, 265), (
+                        0, 100), (65, 100),
+                    (125, 100), (185, 100), (245, 100), (270, 100), (10, 60), (235, 60)],
                 col_x_offset=15,
                 col_y_offset=15
             ),
@@ -228,10 +249,23 @@ class Room(object, EventHandlerMixin):
             bg_filename="room_bg",
             static=statics,
             NPCs=chars,
-            col_pts=[(49, 630), (63, 555), (75, 500), (48, 464), (95, 370), (65, 305), (49, 267), (115, 280),
-                     (130, 210), (195, 210), (260, 210), (325, 210), (390, 210), (455, 210), (520, 210), (585, 210),
-                     (650, 210), (715, 210), (780, 210), (845, 210), (910, 210), (975, 210), (1040, 210), (1105, 210),
-                     (1170, 210), (1200, 210), (1210, 265), (1220, 305), (1255, 500), (1270, 560), (1280, 630)],
+            col_pts=[(
+                49, 630), (
+                63, 555), (
+                75, 500), (
+                48, 464), (
+                95, 370), (65, 305), (49, 267), (115, 280),
+                (130, 210), (195, 210), (260, 210), (325, 210), (390,
+                                                                 210), (
+                    455, 210), (
+                    520, 210), (
+                    585, 210),
+                (650, 210), (715, 210), (780, 210), (845, 210), (910,
+                                                                 210), (
+                    975, 210), (
+                    1040, 210), (
+                    1105, 210),
+                (1170, 210), (1200, 210), (1210, 265), (1220, 305), (1255, 500), (1270, 560), (1280, 630)],
             x=0,
             y=0
         )
@@ -305,7 +339,8 @@ class Room(object, EventHandlerMixin):
 
         self.game_time = datetime.now() - self.start_time
         self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
-        self.clock_text = self.clock_font.render(self.clock_time, True, FU_CMD_COLOR)
+        self.clock_text = self.clock_font.render(
+            self.clock_time, True, FU_CMD_COLOR)
 
         self.update_clouds()
 
@@ -317,7 +352,7 @@ class Room(object, EventHandlerMixin):
                 self._wake_character()
                 self.world.NPCs["guy"].is_animating = False
                 self.world.NPCs["guy"].fps = 10
-            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length*2:
+            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length * 2:
                 self.display_cmd = False
                 self.is_waking = True
                 self.world.NPCs["guy"].set_anim("L")
@@ -328,7 +363,7 @@ class Room(object, EventHandlerMixin):
                 self.display_cmd = True
                 self.cmd = "Press 'SPACE' to Snooze"
 
-        if self.game_time.total_seconds() > 60*4 + 9:
+        if self.game_time.total_seconds() > 60 * 4 + 9:
             self._animate(self.world.static["cell"])
             # TODO ANIMATE LOSS
 
@@ -352,15 +387,16 @@ class Room(object, EventHandlerMixin):
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
 
         if self.display_cmd:
-            screen.blit(self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
+            screen.blit(
+                self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
     def update_clouds(self):
         for c in self.clouds:
             if c.pos[0] > 880:
-                c.set_pos(randint(self.cloud_min_x, self.cloud_max_x), randint(self.cloud_min_y, self.cloud_max_y))
+                c.set_pos(randint(self.cloud_min_x, self.cloud_max_x),
+                          randint(self.cloud_min_y, self.cloud_max_y))
             else:
                 c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
-
 
     def _animate(self, s):
         # Animation

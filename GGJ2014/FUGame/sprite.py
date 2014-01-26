@@ -11,7 +11,7 @@ class Sprite(object):
     """Sprite class"""
 
     def __init__(self, filename, x, y, z, col_pts, col_x_offset=None, col_y_offset=None,
-                 fps=FU_FRAME_RATE):
+                 fps=FU_FRAME_RATE, use_func=None):
         # self.image = utils.convert_white_to_transparent(
         #     pygame.image.load(
         #         "assets/sprites/{}/{}.png".format(filename, filename)
@@ -39,6 +39,7 @@ class Sprite(object):
         self.is_animating = False
 
         self.mask = pygame.mask.from_surface(self.current_frame)
+        self.col_rect = self._get_col_rect()
 
         self.col_pts = col_pts
 
@@ -48,6 +49,19 @@ class Sprite(object):
             self.col_image = pygame.image.load(os.path.join(
                 FU_APATH, "collision", filename + ".png")
             )
+
+        self.use_func = use_func
+
+    def _get_col_rect(self):
+        col_rect = self.col_image.get_rect()
+        col_rect.x, col_rect.y = self.col_pos
+        return col_rect
+
+    @property
+    def sprite_rect(self):
+        _sprite_rect = self.current_frame.get_rect()
+        _sprite_rect.x, _sprite_rect.y = self.pos
+        return _sprite_rect
 
     @property
     def col_pos(self):
@@ -101,7 +115,6 @@ class Sprite(object):
             ) for image in sorted(os.listdir(
                 os.path.join(path, folder_name)))] for folder_name in l
         }
-        # print(d)
         return d
 
     def point_collision(self, pos):
