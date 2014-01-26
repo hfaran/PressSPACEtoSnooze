@@ -110,7 +110,7 @@ class Sprite(object):
             self.current_anim][self.current_frame_num]
 
         # return True if anim'd more than once
-        if self.current_frame >= len(self.anims[self.current_anim]):
+        if self.current_frame_num == 0:
             return True
 
     def load_frames(self):

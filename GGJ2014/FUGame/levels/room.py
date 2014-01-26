@@ -366,7 +366,7 @@ class Room(Level, EventHandlerMixin):
                         pygame.mixer.music.play()
                         self.alarm_on = True
 
-            if 0 <= (self.game_time.total_seconds() + 51) % 10 <= 5 and \
+            if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and \
                     self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
                 self._animate(self.world.static["cell"])
 
