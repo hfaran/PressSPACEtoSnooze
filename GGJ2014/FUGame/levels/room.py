@@ -29,14 +29,17 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.world.static["button"].nudge(0, 5)
             return True
         else:
+            self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
             for s in self.world.static.values():
                 if s.use_func and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
                     s.use_func()
+                    break
                 elif s.name == "chair" and s.sprite_rect.colliderect(
                         self.world.NPCs["guy"].sprite_rect):
                     if s.pos[1] - 50 > 200:
                         s.nudge(0, -50)
+                    break
 
     def _stop_snooze(self):
         if self.world.NPCs["guy"].current_anim == "SNZ":
@@ -77,6 +80,8 @@ class Room(Level, EventHandlerMixin):
         self.snooze_length = 3  # TODO MAKE 9 DEV: 3
         self.msg_count = 0
         self.phone = self.Phone()
+        self.game_over = False
+        self.credits = self.Credits()
 
         self.sky = Sprite(
             filename="sky",
@@ -192,7 +197,7 @@ class Room(Level, EventHandlerMixin):
                 filename="button",
                 x=462,
                 y=190,
-                z=110,
+                z=95,
                 col_pts=[],
                 col_x_offset=None,
                 col_y_offset=None
@@ -312,8 +317,68 @@ class Room(Level, EventHandlerMixin):
 
     def update_loop(self, screen, game_clock):
         """"""
-        self._animate_sprites()
-        self._move_npcs(game_clock)
+        self.game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self.clock_text = self.clock_font.render(
+            self.clock_time, True, FU_CMD_COLOR)
+
+        self.update_clouds()
+
+        if not self.game_over:
+            self._animate_sprites()
+            self._move_npcs(game_clock)
+
+            if self.door_rect.colliderect(self.world.NPCs["guy"].col_rect):
+                raise utils.NextLevelException("office", 0)
+
+            if not self.allow_move:
+                if self.world.NPCs["guy"].pos[0] < 425:
+                    self.allow_move = True
+                    self.world.NPCs["guy"].is_moving = False
+                elif self.is_waking:
+                    self._wake_character()
+                    self.world.NPCs["guy"].is_animating = False
+                    self.world.NPCs["guy"].fps = 10
+                elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length * 2:
+                    self.display_cmd = False
+                    self.is_waking = True
+                    self.world.NPCs["guy"].set_anim("L")
+                elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
+                    self._stop_snooze()
+                    self.world.NPCs["guy"].is_animating = False
+                    self.world.NPCs["guy"].set_anim("W")
+                    self.display_cmd = True
+                    self.cmd = "Press 'SPACE' to Snooze"
+
+            if 0 <= (self.game_time.total_seconds() + 51) % 10 <= 5 and \
+                    self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
+                self._animate(self.world.static["cell"])
+
+                if not self.phone.up:
+                    if self.msg_count == 0:
+                        self.phone.show_phone("Reminder Alarm - work @ 8am", "Iris")
+                    elif self.msg_count == 1:
+                        self.phone.show_phone("Reminder Reminder Alarm - work @ 8am", "Iris")
+                    elif self.msg_count == 2:
+                        self.phone.show_phone("Txt 59095 to donat $5 to http://spam.notascam.org", "Nigerian Prince")
+                    elif self.msg_count == 3:
+                        self.phone.show_phone("You able to get the weekend off? :)", "Jamie")
+                    elif self.msg_count == 4:
+                        self.phone.show_phone("You're late. Be here soon.", "JerkBossFace")
+                    elif self.msg_count == 5:
+                        self.phone.show_phone("Where are you?? GET HERE", "JerkBossFace")
+                    elif self.msg_count == 6:
+                        self.phone.show_phone("Your e-bill is ready. Sign in to view.", "Robelus Mobile")
+                    elif self.msg_count == 7:
+                        self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
+                        self.game_over = True
+                    self.msg_count += 1
+
+            else:
+                self.world.static["cell"].set_anim("I")
+                self.phone.hide_phone()
+
+        self.phone.update_phone()
 
         if self.char_in_bed(self.world.NPCs["guy"].col_rect):
             self.world.NPCs["guy"].set_z(self.world.static["bed"].z_index + 1
@@ -322,82 +387,10 @@ class Room(Level, EventHandlerMixin):
         else:
             self.world.NPCs["guy"].set_z(0)
 
-        if self.door_rect.colliderect(self.world.NPCs["guy"].col_rect):
-            raise utils.NextLevelException("office", 0)
-
-        self.game_time = datetime.now() - self.start_time
-        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
-        self.clock_text = self.clock_font.render(
-            self.clock_time, True, FU_CMD_COLOR)
-
-        self.update_clouds()
-
-        if not self.allow_move:
-            if self.world.NPCs["guy"].pos[0] < 425:
-                self.allow_move = True
-                self.world.NPCs["guy"].is_moving = False
-            elif self.is_waking:
-                self._wake_character()
-                self.world.NPCs["guy"].is_animating = False
-                self.world.NPCs["guy"].fps = 10
-            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length * 2:
-                self.display_cmd = False
-                self.is_waking = True
-                self.world.NPCs["guy"].set_anim("L")
-            elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
-                self._stop_snooze()
-                self.world.NPCs["guy"].is_animating = False
-                self.world.NPCs["guy"].set_anim("W")
-                self.display_cmd = True
-                self.cmd = "Press 'SPACE' to Snooze"
-
-        if self.game_time.total_seconds() > 60 * 4 + 9:
-            self._animate(self.world.static["cell"])
-            # TODO ANIMATE LOSS
-
-        else:
-            if 0 <= (self.game_time.total_seconds() + 51) % 10 <= 5 and \
-                    self.game_time.total_seconds() > 9:  # TODO make 39 DEV: 9
-                self._animate(self.world.static["cell"])
-
-                if self.msg_count == 0:
-                    if not self.phone.up:
-                        self.phone.show_phone("Reminder Alarm - work @ 8am", "Iris")
-                        self.msg_count += 1
-                elif self.msg_count == 1:
-                    if not self.phone.up:
-                        self.phone.show_phone("Reminder Reminder Alarm - work @ 8am", "Iris")
-                        self.msg_count += 1
-                elif self.msg_count == 2:
-                    if not self.phone.up:
-                        self.phone.show_phone("Txt 59095 to donat $5 to http://spam.notascam.org", "Nigerian Prince")
-                        self.msg_count += 1
-                elif self.msg_count == 3:
-                    if not self.phone.up:
-                        self.phone.show_phone("You able to get the weekend off? :)", "Jamie")
-                        self.msg_count += 1
-                elif self.msg_count == 4:
-                    if not self.phone.up:
-                        self.phone.show_phone("You're late. Be here soon.", "JerkBossFace")
-                        self.msg_count += 1
-                elif self.msg_count == 5:
-                    if not self.phone.up:
-                        self.phone.show_phone("Where are you?? GET HERE", "JerkBossFace")
-                        self.msg_count += 1
-                elif self.msg_count == 6:
-                    if not self.phone.up:
-                        self.phone.show_phone("Your e-bill is ready. Sign in to view.", "Robelus Mobile")
-                        self.msg_count += 1
-                elif self.msg_count == 7:
-                    if not self.phone.up:
-                        self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
-                        self.msg_count += 1
-
-            else:
-                self.world.static["cell"].set_anim("I")
-                self.phone.hide_phone()
-
-        self.phone.update_phone()
+        if self.game_over:
+            self.credits.update_dt()
+            if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
+                self.credits.update_credits()
 
         # CALL TO self._blit #
         self._blit(screen)
@@ -422,7 +415,6 @@ class Room(Level, EventHandlerMixin):
 
         screen.blit(self.phone.image, self.phone.pos)
         screen.blit(self.phone.sender_font.render(self.phone.sender, True, (50, 50, 50)), self.phone.sender_pos)
-        #screen.blit(self.phone.msg_font.render(self.phone.message, True, (50, 50, 50)), self.phone.msg_pos)
         utils.drawText(screen, self.phone.message, (50, 50, 50),
                        pygame.Rect(self.phone.msg_pos[0], self.phone.msg_pos[1], 200, 130),
                        self.phone.msg_font, aa=True)
@@ -430,6 +422,10 @@ class Room(Level, EventHandlerMixin):
         s = pygame.Surface((self.phone.image.get_width(), FU_HEIGHT - 630))
         s.fill((0, 0, 0))
         screen.blit(s, (self.phone.pos[0], 630))
+
+        if self.game_over:
+            screen.blit(self.credits.rect, (0, 0))
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
 
     def update_clouds(self):
         for c in self.clouds:
