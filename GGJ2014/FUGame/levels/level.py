@@ -55,8 +55,7 @@ class Level(object):
         def __init__(self):
             self.credit_font = pygame.font.SysFont("verdana", 24)
             self.alpha = 0
-            self.texts = list(reversed(
-                [self.credit_font.render(FU_CREDITS[i], True, (255, 255, 255)) for i in xrange(len(FU_CREDITS))]))
+            self.texts = list(reversed([self.credit_font.render(FU_CREDITS[i], True, (255, 255, 255)) for i in xrange(len(FU_CREDITS))]))
             self.rect = pygame.Surface((FU_WIDTH, FU_HEIGHT))
             self.rect.fill((0, 0, 0))
             self.rect.set_alpha(self.alpha)
@@ -67,6 +66,7 @@ class Level(object):
             self.spacing = 40
             self.lastdt = datetime.now()
             self.update_dt()
+            self.end = False
 
         def update_dt(self):
             self.dt = datetime.now() - self.lastdt
@@ -79,6 +79,8 @@ class Level(object):
         def scroll_credits(self):
             self.credits_pos = self.credits_pos[0], self.credits_pos[1] - self.speed
             self.texts_pos = self._texts_positions()
+            if self.credits_pos[1] + 40*len(FU_CREDITS) < 550:
+                self.end = True
 
         def update_credits(self):
             self.scroll_credits()

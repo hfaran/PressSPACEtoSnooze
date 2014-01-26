@@ -18,6 +18,7 @@ FU_CMD_COLOR = (211, 226, 33)
 
 FU_CREDITS = [
     "CREDITS",
+    "",
     "PROGRAMMERS",
     "PHATTRICK TRAN",
     "DYLAN DUMESNIL",

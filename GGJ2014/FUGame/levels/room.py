@@ -27,6 +27,10 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             # Button
             self.world.static["button"].set_anim("D")
             self.world.static["button"].nudge(0, 5)
+            if self.alarm_on:
+                pygame.mixer.music.stop()
+                self.alarm_on = False
+                self.snooze_count += 1
             return True
         else:
             self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
@@ -84,6 +88,10 @@ class Room(Level, EventHandlerMixin):
         self.phone = self.Phone()
         self.game_over = False
         self.credits = self.Credits()
+        self.snooze_count = 0
+        pygame.mixer.init()
+        pygame.mixer.music.load(os.path.join(FU_APATH, "soundFX", "alarm.mp3"))
+        self.alarm_on = False
 
         self.sky = Sprite(
             filename="sky",
@@ -345,12 +353,17 @@ class Room(Level, EventHandlerMixin):
                     self.display_cmd = False
                     self.is_waking = True
                     self.world.NPCs["guy"].set_anim("L")
+                    pygame.mixer.music.stop()
+                    self.alarm_on = False
                 elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
                     self._stop_snooze()
                     self.world.NPCs["guy"].is_animating = False
                     self.world.NPCs["guy"].set_anim("W")
                     self.display_cmd = True
                     self.cmd = "Press 'SPACE' to Snooze"
+                    if not self.alarm_on:
+                        pygame.mixer.music.play()
+                        self.alarm_on = True
 
             if 0 <= (self.game_time.total_seconds() + 51) % 10 <= 5 and \
                     self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
@@ -393,6 +406,8 @@ class Room(Level, EventHandlerMixin):
             self.credits.update_dt()
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                 self.credits.update_credits()
+            if self.credits.end:
+                raise utils.NextLevelException("room", 0)
 
         # CALL TO self._blit #
         self._blit(screen)
@@ -420,6 +435,8 @@ class Room(Level, EventHandlerMixin):
         utils.drawText(screen, self.phone.message, (50, 50, 50),
                        pygame.Rect(self.phone.msg_pos[0], self.phone.msg_pos[1], 200, 130),
                        self.phone.msg_font, aa=True)
+
+        screen.blit(pygame.font.SysFont("comicsansms", 16).render(str(self.snooze_count), True, (255, 255, 255)), (FU_WIDTH/2, 10))
 
         s = pygame.Surface((self.phone.image.get_width(), FU_HEIGHT - 630))
         s.fill((0, 0, 0))
