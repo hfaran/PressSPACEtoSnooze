@@ -105,6 +105,7 @@ class Computer(Level, EventHandlerMixin):
         self._blit(screen)
 
     def _blit(self, screen):
+        screen.fill((0, 0, 0))
         screen.blit(self.world.bg, self.world.pos)
         self._draw_code(screen)
         if self.display_cmd:
