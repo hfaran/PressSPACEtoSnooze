@@ -11,6 +11,7 @@ from datetime import datetime
 
 from random import randint, choice
 
+NUM_SWAG_WORDS = 30
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
@@ -85,9 +86,9 @@ class Hills(Level, EventHandlerMixin):
         pygame.mixer.music.set_volume(0.75)
         pygame.mixer.music.play(999)
 
-        self._swag_word_list = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!", "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!", "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!", "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!", "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
+        self._swag_word_list = FU_SWAG_WORDS[:]
 
-        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(30)]
+        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(NUM_SWAG_WORDS)]
 
     def create_world(self):
         chars = {
@@ -270,6 +271,14 @@ class Hills(Level, EventHandlerMixin):
         self._animate_sprites()
         self._move_npcs(game_clock)
         self.game_time = datetime.now() - self .start_time
+
+        if self.guy.col_rect.collidepoint(200, 326):
+            pygame.mixer.music.stop()
+            pygame.mixer.stop()
+            raise utils.NextLevelException(
+                "office",
+                1 if len(self._swag_words) < NUM_SWAG_WORDS else 0)
+                # ^ If got any swag words, go to "middle-ground" office
 
         if self.game_time.total_seconds() >= 15:  # TODO make 30 dev: 5
             if not self.dead:
