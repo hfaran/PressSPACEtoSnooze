@@ -413,6 +413,7 @@ class Room(Level, EventHandlerMixin):
                         self.msg_count += 1
                         self.vibrate.play(maxtime=5000)
 
+
                 else:
                     self.world.static["cell"].set_anim("I")
                     self.phone.hide_phone()

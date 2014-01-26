@@ -29,6 +29,9 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             elif s.name == "coffee" and s.sprite_rect.colliderect(
                     self.world.NPCs["guy"].sprite_rect):
                         self.coffee_spilt = True
+            elif s.name == "chair" and s.sprite_rect.colliderect(
+                    self.world.NPCs["guy"].sprite_rect):
+                        raise utils.NextLevelException("computer", 1)
 
 
     @property
