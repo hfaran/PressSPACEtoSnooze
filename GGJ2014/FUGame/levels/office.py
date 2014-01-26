@@ -39,7 +39,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 
 
 class Office(Level, EventHandlerMixin):
-    def __init__(self):
+    def __init__(self, state=0):
         self.world = self.create_world()
 
         self.allow_move = True

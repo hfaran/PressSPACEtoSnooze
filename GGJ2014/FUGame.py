@@ -52,11 +52,11 @@ class Game(object):
         else:
             return False
 
-    def create_level(self, level_name):
+    def create_level(self, level_name, state=0):
         level_mod = import_module("FUGame.levels." + level_name)
         level_class = getattr(
             level_mod, level_name[0].upper() + level_name[1:])
-        level = level_class()
+        level = level_class(state)
         return level
 
     def main(self):
@@ -72,7 +72,7 @@ class Game(object):
                 pygame.display.flip()
             except utils.NextLevelException as e:
                 self.current_level = e.next_level
-                self.level = self.create_level(self.current_level)
+                self.level = self.create_level(self.current_level, e.state)
 
 
 if __name__ == '__main__':
