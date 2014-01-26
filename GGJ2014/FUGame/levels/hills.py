@@ -200,6 +200,7 @@ class Hills(Level, EventHandlerMixin):
                 if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
                     self.credits.update_credits()
                 if self.credits.end:
+                    pygame.mixer.music.stop()
                     pygame.mixer.stop()
                     raise utils.NextLevelException("room", 0)
 
