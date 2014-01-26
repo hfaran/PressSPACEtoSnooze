@@ -11,7 +11,7 @@ from FUGame.constants import *
 from FUGame.utils import utils
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
-aN = 3.0
+aN = 3.0  # TODO make 3.0 dev: 1.0
 NaN = aN * 4.0
 
 class EventHandlerMixin(BaseEventHandlerMixin):
