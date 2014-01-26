@@ -391,7 +391,7 @@ class Room(Level, EventHandlerMixin):
                             self.alarm_on = True
 
                 if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and \
-                        self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
+                        self.game_time.total_seconds() > 9:  # TODO make 39 DEV: 9
                     self._animate(self.world.static["cell"])
 
                     if not self.phone.up:
@@ -457,9 +457,9 @@ class Room(Level, EventHandlerMixin):
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
 
         screen.blit(self.phone.image, self.phone.pos)
-        screen.blit(self.phone.sender_font.render(self.phone.sender, True, (50, 50, 50)), self.phone.sender_pos)
+        screen.blit(self.phone.sender_font.render(self.phone.sender, True, (200, 200, 200)), self.phone.sender_pos)
         utils.drawText(screen, self.phone.message, (50, 50, 50),
-                       pygame.Rect(self.phone.msg_pos[0], self.phone.msg_pos[1], 200, 130),
+                       pygame.Rect(self.phone.msg_pos[0], self.phone.msg_pos[1], 155, 90),
                        self.phone.msg_font, aa=True)
 
         screen.blit(pygame.font.SysFont("comicsansms", 16).render(str(self.snooze_count), True, (255, 255, 255)), (FU_WIDTH/2, 10))
@@ -495,9 +495,7 @@ class Room(Level, EventHandlerMixin):
             self.move_up = False
             self.move_down = False
             self.up = False
-            self.image = self.image.convert()
-            self.image.set_alpha(180)
-            self.sender_font = pygame.font.SysFont("verdana", 24)
+            self.sender_font = pygame.font.SysFont("verdana", 20)
             self.msg_font = pygame.font.SysFont("helvetica", 18)
 
         def show_phone(self, msg, sender):
@@ -510,11 +508,11 @@ class Room(Level, EventHandlerMixin):
 
         @property
         def sender_pos(self):
-            return self.pos[0]+30, self.pos[1]+120
+            return self.pos[0]+20, self.pos[1]+83
 
         @property
         def msg_pos(self):
-            return self.pos[0]+55, self.pos[1]+285
+            return self.pos[0]+45, self.pos[1]+210
 
         def update_phone(self):
             if self.move_up:
