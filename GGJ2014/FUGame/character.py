@@ -24,17 +24,17 @@ class Character(Sprite):
     def old_pos(self):
         return self.old_x, self.old_y
 
-    def move(self):
+    def move(self, fps):
         self.current_anim = self.direction
         self.old_x, self.old_y = self.pos
         self.set_pos(
-            self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed,
-            self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed
+            self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed * fps,
+            self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed * fps
         )
 
-    def move_back(self):
-        self.current_anim = self.direction
-        self.set_pos(
-            self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed * -5,
-            self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed * -5
-        )
+    # def move_back(self):
+    #     self.current_anim = self.direction
+    #     self.set_pos(
+    #         self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed * -5,
+    #         self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed * -5
+    #     )

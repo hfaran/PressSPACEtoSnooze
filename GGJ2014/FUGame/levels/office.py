@@ -39,10 +39,10 @@ class Office(object, EventHandlerMixin):
                 y=190,
                 z=0,
                 col_pts=[],
-                col_x_offset=7,
-                col_y_offset=92,
-                fps=4,
-                speed=5
+                col_x_offset=50,
+                col_y_offset=117,
+                fps=10,
+                speed=0.2
             ),
         }
 
@@ -82,7 +82,7 @@ class Office(object, EventHandlerMixin):
             self.world.NPCs["guy"].is_moving = False
             return False
 
-    def update_loop(self, screen):
+    def update_loop(self, screen, game_clock):
         # Create character collision box thing
         sprite_rect = self.world.NPCs["guy"].col_image.get_rect()
         sprite_rect.x, sprite_rect.y = self.world.NPCs["guy"].col_pos
@@ -95,7 +95,7 @@ class Office(object, EventHandlerMixin):
             # Movement
             if s.is_moving:
                 if not self.world.check_colliding(s):
-                    s.move()
+                    s.move(game_clock.get_fps())
                 else:
                     s.set_pos(*s.old_pos)
                 self._animate(s)
