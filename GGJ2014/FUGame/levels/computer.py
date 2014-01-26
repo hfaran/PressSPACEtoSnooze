@@ -125,7 +125,7 @@ class Computer(Level, EventHandlerMixin):
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
         # xrange(len(self._code))])
-        return ("; ").join(self._code[31:self._space_count + 31])
+        return ("; ").join(self._code[31:self._space_count + 31])  # TODO Make sure this starts at proper
 
     def _draw_space(self, screen):
         utils.drawText(

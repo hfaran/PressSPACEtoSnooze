@@ -9,14 +9,16 @@ from FUGame.utils import utils
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 from datetime import datetime
 
-from random import randint
+from random import randint, choice
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
+
     def _use(self):
         if self.dead:
             self.credits.speed += 5
-        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
+        self.world.NPCs["guy"].set_anim(
+            "{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()
@@ -32,7 +34,37 @@ class EventHandlerMixin(BaseEventHandlerMixin):
         return _event_map
 
 
+class SwagWord(object):
+
+    def __init__(self, word):
+        self._Y_BOUNDS = (0, int(FU_HEIGHT*4.0/4.0))
+        self._X_BOUNDS = (0, int(FU_WIDTH*2.0/4.0))
+        self.word = word
+        self.gen_new_rect()
+        self.font = pygame.font.SysFont("comicsansms", 48)
+        self.fc = 0
+        self.freq = randint(3,10)
+
+    def gen_new_rect(self):
+        self.rect = pygame.Rect(
+            randint(*self._X_BOUNDS), randint(*self._Y_BOUNDS),
+            1000, 300)
+
+    def draw(self, screen):
+        self.fc = (self.fc + 1) % self.freq
+        if self.fc < self.freq/2:
+            utils.drawText(
+                screen,
+                self.word,
+                tuple([randint(0, 255) for i in xrange(3)]),
+                self.rect,
+                self.font,
+                aa=True
+            )
+
+
 class Hills(Level, EventHandlerMixin):
+
     def __init__(self, state=0):
         self.world = self.create_world()
         self.allow_move = True
@@ -43,9 +75,14 @@ class Hills(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.credits = self.Credits()
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "manicfrolic.wav"))
+        pygame.mixer.music.load(
+            os.path.join(FU_APATH, "music", "manicfrolic.wav"))
         pygame.mixer.music.set_volume(0.75)
         pygame.mixer.music.play(999)
+
+        self._swag_word_list = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!", "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!", "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!", "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!", "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
+
+        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(10)]
 
     def create_world(self):
         chars = {
@@ -67,8 +104,16 @@ class Hills(Level, EventHandlerMixin):
                 x=277,
                 y=510,
                 z=0,
-                col_pts=[(12, 56), (31, 64), (54, 67), (77, 68), (95, 65), (115, 60), (127, 54), (128, 43), (17, 42),
-                         (64, 68), (64, 82), (65, 95), (79, 96), (76, 79), (74, 66)
+                col_pts=[(
+                    12, 56), (
+                    31, 64), (
+                    54, 67), (
+                    77, 68), (
+                    95, 65), (
+                    115, 60), (
+                    127, 54), (128, 43), (17, 42),
+                    (64, 68), (64, 82), (65,
+                                         95), (79, 96), (76, 79), (74, 66)
                 ],
                 col_x_offset=None,
                 col_y_offset=None
@@ -80,8 +125,14 @@ class Hills(Level, EventHandlerMixin):
                 # x=0,
                 # y=0,
                 z=100,
-                col_pts=[(31, 95), (59, 107), (107, 115), (160, 117), (202, 109), (234, 97), (264, 79), (271, 73),
-                         (258, 45), (217, 49), (172, 50), (120, 53), (97, 51), (72, 48), (64, 44), (48, 63)
+                col_pts=[(
+                    31, 95), (
+                    59, 107), (
+                    107, 115), (
+                    160, 117), (
+                    202, 109), (234, 97), (264, 79), (271, 73),
+                    (258, 45), (217, 49), (172, 50), (120,
+                                                      53), (97, 51), (72, 48), (64, 44), (48, 63)
                 ],
                 col_x_offset=None,
                 col_y_offset=None,
@@ -92,8 +143,14 @@ class Hills(Level, EventHandlerMixin):
                 x=60,
                 y=115,
                 z=-100,
-                col_pts=[(50, 234), (73, 230), (87, 225), (120, 217), (152, 201), (176, 190), (203, 171), (200, 158),
-                         (190, 133), (42, 175)
+                col_pts=[(
+                    50, 234), (
+                    73, 230), (
+                    87, 225), (
+                    120, 217), (
+                    152, 201), (
+                    176, 190), (203, 171), (200, 158),
+                    (190, 133), (42, 175)
                 ],
                 col_x_offset=None,
                 col_y_offset=None,
@@ -154,12 +211,33 @@ class Hills(Level, EventHandlerMixin):
             bg_filename="happyHills_bg",
             static=statics,
             NPCs=chars,
-            col_pts=[(65, 420), (107, 406), (127, 367), (159, 336), (187, 306), (224, 288), (253, 271), (281, 254),
-                     (310, 244), (386, 214), (437, 201), (472, 200), (539, 184), (619, 188), (621, 231), (617, 257),
-                     (626, 292), (626, 332), (626, 356), (626, 404), (626, 429), (626, 461), (626, 501), (626, 557),
-                     (626, 578), (626, 600), (626, 622), (626, 629), (626, 637), (340, 606), (340, 580), (359, 580),
-                     (357, 606), (451, 607), (457, 575), (456, 595), (483, 576), (486, 584), (491, 603), (468, 618),
-                     (459, 573), (482, 572), (469, 552)],
+            col_pts=[(
+                65, 420), (
+                107, 406), (
+                127, 367), (
+                159, 336), (
+                187, 306), (224, 288), (253, 271), (281, 254),
+                (310, 244), (386, 214), (437, 201), (472, 200), (539,
+                                                                 184), (
+                    619, 188), (
+                    621, 231), (
+                    617, 257),
+                (626, 292), (626, 332), (626, 356), (626, 404), (626,
+                                                                 429), (
+                    626, 461), (
+                    626, 501), (
+                    626, 557),
+                (626, 578), (626, 600), (626, 622), (626, 629), (626,
+                                                                 637), (
+                    340, 606), (
+                    340, 580), (
+                    359, 580),
+                (357, 606), (451, 607), (457, 575), (456, 595), (483,
+                                                                 576), (
+                    486, 584), (
+                    491, 603), (
+                    468, 618),
+                (459, 573), (482, 572), (469, 552)],
             x=0,
             y=0
         )
@@ -188,7 +266,7 @@ class Hills(Level, EventHandlerMixin):
         self._move_npcs(game_clock)
         self.game_time = datetime.now() - self .start_time
 
-        if self.game_time.total_seconds() >= 5:  # TODO make 30 dev: 5
+        if self.game_time.total_seconds() >= 15:  # TODO make 30 dev: 5
             if not self.dead:
             # TODO play car cash
                 self.dead = True
@@ -204,7 +282,6 @@ class Hills(Level, EventHandlerMixin):
                     pygame.mixer.stop()
                     raise utils.NextLevelException("room", 0)
 
-
         # Blitting
         self._blit(screen)
 
@@ -213,11 +290,13 @@ class Hills(Level, EventHandlerMixin):
             screen.blit(self.world.bg, self.world.pos)
             for s in self.world.sprites:
                 screen.blit(s.current_frame, s.pos)
+            for w in self._swag_words:
+                w.draw(screen)
         else:
             screen.fill((0, 0, 0))
             screen.blit(self.credits.rect, (0, 0))
-            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
-
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i])
+             for i in xrange(len(self.credits.texts))]
 
         if self.display_cmd:
             screen.blit(
