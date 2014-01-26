@@ -1,4 +1,5 @@
 import pygame
+import os
 from pygame.locals import *
 
 from FUGame.character import Character, Sprite
@@ -17,14 +18,17 @@ class EventHandlerMixin(BaseEventHandlerMixin):
     #     }
 
     def _use(self):
-
+        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
-                if s.use_func and s.sprite_rect.colliderect(
-                        self.world.NPCs["guy"].sprite_rect):
-                    s.use_func()
-                elif s.name == "garbageCan" and s.sprite_rect.colliderect(
-                        self.world.NPCs["guy"].sprite_rect):
-                            s.is_animating = True
+            if s.use_func and s.sprite_rect.colliderect(
+                    self.world.NPCs["guy"].sprite_rect):
+                s.use_func()
+            elif s.name == "garbageCan" and s.sprite_rect.colliderect(
+                    self.world.NPCs["guy"].sprite_rect):
+                        s.is_animating = True
+            elif s.name == "coffee" and s.sprite_rect.colliderect(
+                    self.world.NPCs["guy"].sprite_rect):
+                        self.coffee_spilt = True
 
 
     @property
@@ -41,6 +45,10 @@ class Office(Level, EventHandlerMixin):
         self.allow_move = True
         self.sparked = False
         self.credits = self.Credits()
+        self.coffee_spilt = False
+        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
+        pygame.mixer.music.set_volume(0.75)
+        pygame.mixer.music.play(999)
 
     def create_world(self):
         # Create objects
@@ -58,9 +66,9 @@ class Office(Level, EventHandlerMixin):
             ),
             "rival": Character(
                 filename="rival",
-                x=1020,
-                y=95,
-                z=100,
+                x=1070,
+                y=215,
+                z=55,
                 col_pts=[],
                 col_x_offset=0,
                 col_y_offset=0,
@@ -68,6 +76,8 @@ class Office(Level, EventHandlerMixin):
                 speed=5
             )
         }
+        chars["rival"].set_anim("W")
+        chars["rival"].is_animating = True
 
         statics = {
             "officeChairMain": Sprite(
@@ -113,6 +123,17 @@ class Office(Level, EventHandlerMixin):
                 y=535,
                 z=0,
                 col_pts=[(0, 0), (0, 42), (49, 0), (49, 42)],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=10
+            ),
+
+            "coffee": Sprite(
+                filename="coffee",
+                x=900,
+                y=150,
+                z=-30,
+                col_pts=[(85, 67), (117, 51), (135, 70)],
                 col_x_offset=None,
                 col_y_offset=None,
                 fps=10
@@ -194,6 +215,17 @@ class Office(Level, EventHandlerMixin):
             if self.credits.end:
                 pygame.mixer.stop()
                 raise utils.NextLevelException("room", 0)
+
+        if self.coffee_spilt:
+            self._animate(self.world.static["coffee"], anim_once=True)
+
+            if not self.world.static["coffee"].is_animating:
+                if self.world.NPCs["rival"].is_animating:
+                    self.world.NPCs["rival"].set_anim("A")
+                    self.world.NPCs["rival"].is_animating = False
+                    self.world.NPCs["rival"].nudge(-83, -45)
+                    self.world.NPCs["rival"]._z = 0
+                self._animate(self.world.NPCs["rival"], anim_once=True)
 
         # Blitting
         self._blit(screen)
