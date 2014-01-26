@@ -17,6 +17,7 @@ from FUGame.utils import utils
 class Game(object):
 
     def __init__(self):
+        #pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
         # screenInfo = pygame.display.Info()
         # screen = pygame.display.set_mode(
