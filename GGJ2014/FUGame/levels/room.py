@@ -97,8 +97,9 @@ class Room(Level, EventHandlerMixin):
         self.credits = self.Credits()
         self.snooze_count = 0
         pygame.mixer.init()
-        pygame.mixer.music.load(os.path.join(FU_APATH, "soundFX", "alarm.mp3"))
-        self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
+        #pygame.mixer.music.load(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
+        #self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
+        #self.alarm = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
         self.alarm_on = False
 
         self.sky = Sprite(
