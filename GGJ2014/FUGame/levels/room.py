@@ -24,11 +24,17 @@ class EventHandlerMixin:
             self.display_cmd = False
             self.snooze_time = datetime.now()
             self.world.NPCs["guy"].set_anim("SNZ")
+            # Button
+            self.world.static["button"].set_anim("D")
+            self.world.static["button"].nudge(0, 9)
             return True
 
     def _stop_snooze(self):
         if self.world.NPCs["guy"].current_anim == "SNZ":
             self.world.NPCs["guy"].set_anim("L")
+            # Button
+            self.world.static["button"].set_anim("U")
+            self.world.static["button"].nudge(0, -9)
             return True
 
     @property
@@ -150,9 +156,18 @@ class Room(object, EventHandlerMixin):
             ),
             "alarmClock": Sprite(
                 filename="alarmClock",
-                x=440,
-                y=180,
-                z=100,
+                x=450,
+                y=200,
+                z=80,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+            "button": Sprite(
+                filename="button",
+                x=462,
+                y=190,
+                z=110,
                 col_pts=[],
                 col_x_offset=None,
                 col_y_offset=None
@@ -296,6 +311,7 @@ class Room(object, EventHandlerMixin):
                 self.is_waking = True
                 self.world.NPCs["guy"].set_anim("L")
             elif (datetime.now() - self.snooze_time).total_seconds() >= self.snooze_length:
+                self._stop_snooze()
                 self.world.NPCs["guy"].is_animating = False
                 self.world.NPCs["guy"].set_anim("W")
                 self.display_cmd = True
