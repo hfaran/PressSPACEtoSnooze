@@ -29,11 +29,12 @@ class Level(object):
 
     """Base class for Levels"""
 
-    def _animate(self, s):
+    def _animate(self, s, anim_once=False):
         # Animation
         s.update_dt()
         if s.dt.microseconds > 1.0 / s.fps * 1000000:
-            s.next_frame()
+            if s.next_frame() and anim_once:
+                s.is_animating = False
 
     def _animate_sprites(self):
         for s in self.world.unsorted_sprites:

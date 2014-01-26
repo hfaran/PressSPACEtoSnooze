@@ -109,6 +109,10 @@ class Sprite(object):
         self.current_frame = self.anims[
             self.current_anim][self.current_frame_num]
 
+        # return True if anim'd more than once
+        if self.current_frame >= len(self.anims[self.current_anim]):
+            return True
+
     def load_frames(self):
         path = os.path.join("assets", "sprites", self.name)
         l = sorted(os.listdir(path))

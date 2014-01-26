@@ -53,6 +53,13 @@ class World(object):
         self._x = x
         self._y = y
 
+    def check_col(self, stat, char):
+        for pt in stat.col_pts:
+            abs_pt = (pt[0] + stat.pos[0], pt[1] + stat.pos[1])
+            if char.col_rect.collidepoint(abs_pt):
+                return True
+        return False
+
     def check_colliding(self, sprite):
         # sprite_rect = sprite.col_image.get_rect()
         # sprite_rect.x, sprite_rect.y = sprite.col_pos
@@ -74,8 +81,8 @@ class World(object):
                     return True
 
         for pt in self.col_pts:
-                if col_rect.collidepoint(pt):
-                    return True
+            if col_rect.collidepoint(pt):
+                return True
 
         sprite_rect = sprite.sprite_rect
         for b in self.border_rects:
