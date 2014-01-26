@@ -23,6 +23,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.credits.speed += 5
         self.world.NPCs["guy"].set_anim(
             "{}S".format(self.world.NPCs["guy"].direction))
+        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()
@@ -42,6 +43,39 @@ class EventHandlerMixin(BaseEventHandlerMixin):
         return _event_map
 
 
+
+class SwagWord(object):
+
+    def __init__(self, word):
+        self._Y_BOUNDS = (200, 530)
+        self._X_BOUNDS = (50, 500)
+        self.word = word
+        self.gen_new_rect()
+        self.font = pygame.font.SysFont("comicsansms", 24)
+        self.fc = 0
+        self.freq = randint(3,10)
+        self.punch0 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
+        self.punch0.set_volume(0.15)
+        self.punch1 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
+        self.punch1.set_volume(0.15)
+
+    def gen_new_rect(self):
+        self.rect = pygame.Rect(
+            randint(*self._X_BOUNDS), randint(*self._Y_BOUNDS),
+            150, 50)
+
+    def draw(self, screen):
+        self.fc = (self.fc + 1) % self.freq
+        if self.fc < self.freq/2:
+            utils.drawText(
+                screen,
+                self.word,
+                tuple([randint(0, 255) for i in xrange(3)]),
+                self.rect,
+                self.font,
+                aa=True
+            )
+
 class Hills(Level, EventHandlerMixin):
 
     def __init__(self, state=0):
@@ -55,6 +89,10 @@ class Hills(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.credits = self.Credits()
+        self.punch0 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
+        self.punch0.set_volume(0.15)
+        self.punch1 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
+        self.punch1.set_volume(0.15)
         pygame.mixer.music.load(
             os.path.join(FU_APATH, "music", "manicfrolic.ogg"))
         pygame.mixer.music.set_volume(0.75)
@@ -185,6 +223,16 @@ class Hills(Level, EventHandlerMixin):
                 col_x_offset=None,
                 col_y_offset=None,
                 fps=5
+            ),
+            "flowers": Sprite(
+                filename="flowers",
+                x=0,
+                y=0,
+                z=-300,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None,
+                fps=8
             )
         }
         world = World(
@@ -230,6 +278,7 @@ class Hills(Level, EventHandlerMixin):
         world.static["sunFace"].is_animating = True
         world.static["rainbowFoam"].is_animating = True
         world.static["shine"].is_animating = True
+        world.static["flowers"].is_animating = True
         return world
 
     def handle_events(self, event):
@@ -271,6 +320,12 @@ class Hills(Level, EventHandlerMixin):
                     pygame.mixer.music.stop()
                     pygame.mixer.stop()
                     raise utils.NextLevelException("room", 0)
+
+        if self.world.static["flowers"].current_frame_num == 3 or self.world.static["flowers"].current_frame_num == 9:
+            self.punch0.play()
+
+        if self.world.static["flowers"].current_frame_num == 7:
+            self.punch1.play()
 
         # Blitting
         self._blit(screen)

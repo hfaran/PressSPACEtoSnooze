@@ -305,6 +305,8 @@ class Office(Level, EventHandlerMixin):
 
         # Blitting
         self._blit(screen)
+        if self.world.NPCs["rival"].current_frame_num == 8 and self.world.NPCs["rival"].current_anim == "A":
+                self.world.NPCs["rival"].set_frame(7)
 
     def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
