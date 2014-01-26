@@ -1,4 +1,5 @@
 import pygame
+import os
 from pygame.locals import *
 
 from FUGame.character import Character, Sprite
@@ -26,7 +27,7 @@ class EventHandlerMixin:
             self.world.NPCs["guy"].set_anim("SNZ")
             # Button
             self.world.static["button"].set_anim("D")
-            self.world.static["button"].nudge(0, 9)
+            self.world.static["button"].nudge(0, 5)
             return True
 
     def _stop_snooze(self):
@@ -34,7 +35,7 @@ class EventHandlerMixin:
             self.world.NPCs["guy"].set_anim("L")
             # Button
             self.world.static["button"].set_anim("U")
-            self.world.static["button"].nudge(0, -9)
+            self.world.static["button"].nudge(0, -5)
             return True
 
     @property
@@ -115,12 +116,12 @@ class Room(object, EventHandlerMixin):
         chars = {
             "guy": Character(
                 filename="main",
-                x=550,
+                x=525,
                 y=190,
                 z=0,
                 col_pts=[],
-                col_x_offset=7,
-                col_y_offset=92,
+                col_x_offset=50,
+                col_y_offset=117,
                 fps=4,
                 speed=5
             ),
@@ -154,11 +155,21 @@ class Room(object, EventHandlerMixin):
                 col_x_offset=None,
                 col_y_offset=None
             ),
+            "cell": Sprite(
+                filename="cell",
+                x=1125,
+                y=360,
+                z=30,
+                fps=15,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
             "alarmClock": Sprite(
                 filename="alarmClock",
                 x=450,
                 y=200,
-                z=80,
+                z=50,
                 col_pts=[],
                 col_x_offset=None,
                 col_y_offset=None
@@ -294,12 +305,12 @@ class Room(object, EventHandlerMixin):
 
         self.game_time = datetime.now() - self.start_time
         self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
-        self.clock_text = self.clock_font.render(self.clock_time, True, (0, 255, 0))
+        self.clock_text = self.clock_font.render(self.clock_time, True, FU_CMD_COLOR)
 
         self.update_clouds()
 
         if not self.allow_move:
-            if self.world.NPCs["guy"].pos[0] < 450:
+            if self.world.NPCs["guy"].pos[0] < 425:
                 self.allow_move = True
                 self.world.NPCs["guy"].is_moving = False
             elif self.is_waking:
@@ -317,6 +328,16 @@ class Room(object, EventHandlerMixin):
                 self.display_cmd = True
                 self.cmd = "Press 'SPACE' to Snooze"
 
+        if self.game_time.total_seconds() > 60*4 + 9:
+            self._animate(self.world.static["cell"])
+            # TODO ANIMATE LOSS
+
+        else:
+            if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and self.game_time.total_seconds() > 39:
+                self._animate(self.world.static["cell"])
+            else:
+                self.world.static["cell"].set_anim("I")
+
         # Blitting
         screen.blit(self.sky.current_frame, self.sky.pos)
 
@@ -331,14 +352,14 @@ class Room(object, EventHandlerMixin):
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
 
         if self.display_cmd:
-            screen.blit(self.cmd_font.render(self.cmd, True, (255, 255, 255)), FU_CMD_POS)
+            screen.blit(self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
     def update_clouds(self):
         for c in self.clouds:
             if c.pos[0] > 880:
                 c.set_pos(randint(self.cloud_min_x, self.cloud_max_x), randint(self.cloud_min_y, self.cloud_max_y))
             else:
-                c.set_pos(c.pos[0] + randint(1,4), c.pos[1])
+                c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
 
 
     def _animate(self, s):
