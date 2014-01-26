@@ -48,6 +48,9 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                     elif self.guy.pos[1] < s.pos[1] and s.pos[1] - 50 < 330:
                         s.nudge(0, 50)
                     break
+                elif s.name == "cell" and s.sprite_rect.colliderect(
+                        self.guy.sprite_rect):
+                    s.set_pos(-500, -500)
 
     def _stop_snooze(self):
         if self.guy.current_anim == "SNZ":
