@@ -6,12 +6,15 @@ from FUGame.character import Character, Sprite
 from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
+from FUGame.swagwords import SwagWord
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 from datetime import datetime
 
 from random import randint, choice
 
+
 NUM_SWAG_WORDS = 30
+
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
@@ -37,35 +40,6 @@ class EventHandlerMixin(BaseEventHandlerMixin):
         _event_map = dict(self._move_event_map)
         _event_map[K_SPACE] = [self._use, ()]
         return _event_map
-
-
-class SwagWord(object):
-
-    def __init__(self, word):
-        self._Y_BOUNDS = (200, 530)
-        self._X_BOUNDS = (50, 500)
-        self.word = word
-        self.gen_new_rect()
-        self.font = pygame.font.SysFont("comicsansms", 24)
-        self.fc = 0
-        self.freq = randint(3,10)
-
-    def gen_new_rect(self):
-        self.rect = pygame.Rect(
-            randint(*self._X_BOUNDS), randint(*self._Y_BOUNDS),
-            150, 50)
-
-    def draw(self, screen):
-        self.fc = (self.fc + 1) % self.freq
-        if self.fc < self.freq/2:
-            utils.drawText(
-                screen,
-                self.word,
-                tuple([randint(0, 255) for i in xrange(3)]),
-                self.rect,
-                self.font,
-                aa=True
-            )
 
 
 class Hills(Level, EventHandlerMixin):

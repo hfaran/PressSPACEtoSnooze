@@ -52,7 +52,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 class Office(Level, EventHandlerMixin):
     def __init__(self, state=0):
         self.world = self.create_world()
-
+        self.state = state
         self.allow_move = True
         self.sparked = False
         self.credits = self.Credits()
@@ -70,6 +70,14 @@ class Office(Level, EventHandlerMixin):
         self.elevator.set_volume(1.0)
         self.electrocute = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "electrocute.wav"))
         self.electrocute.set_volume(1.0)
+        # Play swag office if state 1
+        #print state
+        if self.state in [1]:
+            pygame.mixer.init()
+            pygame.mixer.music.load(os.path.join(FU_APATH, "music", "swagoffice.ogg"))
+            pygame.mixer.music.set_volume(0.6)
+            pygame.mixer.music.play()
+
 
     def create_world(self):
         # Create objects
@@ -327,6 +335,8 @@ class Office(Level, EventHandlerMixin):
         if self.world.check_col(
                 self.world.static["officeChairMain"], self.world.NPCs["guy"]):
             pygame.mixer.stop()
+            if self.state in [1]:
+                raise utils.NextLevelException("computer", 2)
             if self.coffee_spilt:
                 raise utils.NextLevelException("computer", 1)
             else:
