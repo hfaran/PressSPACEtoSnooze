@@ -67,9 +67,11 @@ class Office(Level, EventHandlerMixin):
             "garbageCan": Sprite(
                 filename="garbageCan",
                 x=1108,
-                y=450,
+                y=460,
                 z=0,
-                col_pts=[],
+                col_pts=[(1111, 509), (1111, 500), (1112, 484), (1117, 473), (1129, 462), (1146, 454), (1165, 453),
+                         (1178, 462), (1189, 468), (1196, 478), (1200, 491), (1200, 509), (1177, 507), (1149, 506),
+                         (1125, 511)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -79,7 +81,8 @@ class Office(Level, EventHandlerMixin):
                 x=665,
                 y=535,
                 z=0,
-                col_pts=[],
+                col_pts=[(700, 573), (681, 573), (667, 572), (664, 559), (664, 545), (674, 538), (689, 538),
+                         (711, 540), (715, 557), (699, 571)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
