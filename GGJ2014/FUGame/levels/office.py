@@ -169,7 +169,7 @@ class Office(Level, EventHandlerMixin):
         self._move_npcs(game_clock)
 
         # Events
-        self.__check_sparks_collision()s
+        self.__check_sparks_collision()
 
         # Blitting
         self._blit(screen)
