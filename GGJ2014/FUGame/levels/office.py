@@ -40,6 +40,7 @@ class Office(Level, EventHandlerMixin):
 
         self.allow_move = True
         self.sparked = False
+        self.credits = self.Credits()
 
     def create_world(self):
         # Create objects
@@ -174,6 +175,12 @@ class Office(Level, EventHandlerMixin):
             self.__check_sparks_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
+            self.credits.update_dt()
+            if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
+                self.credits.update_credits()
+            if self.credits.end:
+                pygame.mixer.stop()
+                raise utils.NextLevelException("room", 0)
 
         # Blitting
         self._blit(screen)
@@ -182,6 +189,11 @@ class Office(Level, EventHandlerMixin):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
             screen.blit(s.current_frame, s.pos)
+
+        if self.sparked:
+            screen.blit(self.credits.rect, (0, 0))
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+
 
     def __check_sparks_collision(self):
         # colliding with sparks
