@@ -65,21 +65,19 @@ class World(object):
         #         if s_rect.colliderect(sprite_rect):
         #             return True
 
-        sprite_rect = sprite.col_image.get_rect()
-        sprite_rect.x, sprite_rect.y = sprite.col_pos
+        col_rect = sprite.col_rect
 
         for s in [s for s in self.static.values() + self.NPCs.values() if s.name != sprite.name]:
             for pt in s.col_pts:
                 abs_pt = (pt[0] + s.pos[0], pt[1] + s.pos[1])
-                if sprite_rect.collidepoint(abs_pt):
+                if col_rect.collidepoint(abs_pt):
                     return True
 
         for pt in self.col_pts:
-                if sprite_rect.collidepoint(pt):
+                if col_rect.collidepoint(pt):
                     return True
 
-        sprite_rect = sprite.current_frame.get_rect()
-        sprite_rect.x, sprite_rect.y = sprite.pos
+        sprite_rect = sprite.sprite_rect
         for b in self.border_rects:
             if b.colliderect(sprite_rect):
                     return True
