@@ -41,6 +41,7 @@ class Sprite(object):
         self.mask = pygame.mask.from_surface(self.current_frame)
 
         self.col_pts = col_pts
+        self.col_image = None
 
         if all([col_y_offset is not None, col_x_offset is not None]):
             self.col_x_offset = col_x_offset
@@ -48,14 +49,16 @@ class Sprite(object):
             self.col_image = pygame.image.load(os.path.join(
                 FU_APATH, "collision", filename + ".png")
             )
-            self.col_rect = self._get_col_rect()
 
         self.use_func = use_func
 
-    def _get_col_rect(self):
-        col_rect = self.col_image.get_rect()
-        col_rect.x, col_rect.y = self.col_pos
-        return col_rect
+    @property
+    def col_rect(self):
+        if self.col_image:
+            _col_rect = self.col_image.get_rect()
+            _col_rect.x, _col_rect.y = self.col_pos
+            return _col_rect
+        return None
 
     @property
     def sprite_rect(self):
