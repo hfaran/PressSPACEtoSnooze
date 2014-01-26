@@ -47,10 +47,50 @@ class Office(object, EventHandlerMixin):
         }
 
         statics = {
+            "officeChairMain": Sprite(
+                filename="officeChairMain",
+                x=288,
+                y=278,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
             "officeChairRival": Sprite(
                 filename="officeChairRival",
                 x=989,
                 y=228,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
+            "garbageCan": Sprite(
+                filename="garbageCan",
+                x=1108,
+                y=450,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
+            "sparks": Sprite(
+                filename="sparks",
+                x=665,
+                y=535,
+                z=0,
+                col_pts=[],
+                col_x_offset=None,
+                col_y_offset=None
+            ),
+
+            "computerBlink": Sprite(
+                filename="computerBlink",
+                x=450,
+                y=285,
                 z=0,
                 col_pts=[],
                 col_x_offset=None,
@@ -60,7 +100,8 @@ class Office(object, EventHandlerMixin):
 
         world = World(
             level_id="office",
-            bg_filename="office_bg_placement_reference",
+            #bg_filename="office_bg_placement_reference",
+            bg_filename="office_bg",
             static=statics,
             NPCs=chars,
             col_pts=[(57, 504), (76, 504), (110, 504), (137, 502), (164, 502), (172, 478), (174, 441), (185, 404),
