@@ -61,7 +61,7 @@ class Office(Level, EventHandlerMixin):
                 z=0,
                 col_pts=[],
                 col_x_offset=None,
-                col_y_offset=None
+                col_y_offset=None,
             ),
 
             "garbageCan": Sprite(
@@ -69,11 +69,9 @@ class Office(Level, EventHandlerMixin):
                 x=1108,
                 y=460,
                 z=0,
-                col_pts=[(1111, 509), (1111, 500), (1112, 484), (1117, 473), (1129, 462), (1146, 454), (1165, 453),
-                         (1178, 462), (1189, 468), (1196, 478), (1200, 491), (1200, 509), (1177, 507), (1149, 506),
-                         (1125, 511)],
+                col_pts=[(97, 59), (0, 59), (7, 21), (44, 0), (77, 11), (90, 29)],
                 col_x_offset=None,
-                col_y_offset=None
+                col_y_offset=None,
             ),
 
             "sparks": Sprite(
@@ -81,10 +79,10 @@ class Office(Level, EventHandlerMixin):
                 x=665,
                 y=535,
                 z=0,
-                col_pts=[(700, 573), (681, 573), (667, 572), (664, 559), (664, 545), (674, 538), (689, 538),
-                         (711, 540), (715, 557), (699, 571)],
+                col_pts=[(0, 0), (0, 42), (49, 0), (49, 42)],
                 col_x_offset=None,
-                col_y_offset=None
+                col_y_offset=None,
+                fps=20
             ),
 
             "computerBlink": Sprite(
@@ -125,6 +123,7 @@ class Office(Level, EventHandlerMixin):
         )
 
         world.NPCs["guy"].set_anim("F")
+        world.static["sparks"].is_animating = True
 
         return world
 
