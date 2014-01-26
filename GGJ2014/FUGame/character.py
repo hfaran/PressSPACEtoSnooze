@@ -28,8 +28,8 @@ class Character(Sprite):
         self.current_anim = self.direction
         self.old_x, self.old_y = self.pos
         self.set_pos(
-            self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed * fps,
-            self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed * fps
+            self.pos[0] + FU_DIRECTS[self.direction][0] * self.speed * (2 - fps / (FU_FRAME_RATE * 1.5)),
+            self.pos[1] + FU_DIRECTS[self.direction][1] * self.speed * (2 - fps / (FU_FRAME_RATE * 1.5))
         )
 
     # def move_back(self):

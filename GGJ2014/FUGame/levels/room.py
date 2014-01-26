@@ -133,7 +133,7 @@ class Room(object, EventHandlerMixin):
                 col_x_offset=50,
                 col_y_offset=117,
                 fps=4,
-                speed=0.2
+                speed=7
             ),
         }
         statics = {
