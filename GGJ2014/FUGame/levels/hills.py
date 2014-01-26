@@ -23,6 +23,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.credits.speed += 5
         self.world.NPCs["guy"].set_anim(
             "{}S".format(self.world.NPCs["guy"].direction))
+        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()

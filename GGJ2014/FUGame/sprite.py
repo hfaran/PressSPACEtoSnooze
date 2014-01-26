@@ -136,3 +136,8 @@ class Sprite(object):
             return self.mask.get_at(pos)
         except IndexError:
             return False
+
+    def set_frame(self, frame):
+        self.current_frame_num = frame
+        self.current_frame = self.anims[
+            self.current_anim][self.current_frame_num]
