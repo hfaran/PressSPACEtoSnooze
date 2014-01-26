@@ -25,14 +25,18 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                 break
             elif s.name == "garbageCan" and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.is_animating = True
+                self.garb.play()
                 break
             elif not self.coffee_spilt and s.name == "coffee" and s.sprite_rect.colliderect(
                     self.world.NPCs["guy"].sprite_rect):
                 self.coffee_spilt = True
                 self.door_open = True
+                self.elevator.play()
+                self.cup.play()
                 break
         if self.coffee_spilt and self.check_rival_collision():
             self.door_open = False
+            self.elevator.play()
             self.world.NPCs["rival"].is_animating = True
         elif self.sparked:
             self.credits.speed += 5
@@ -58,6 +62,14 @@ class Office(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd = "Press 'SPACE' to Apologize"
         self.door_rect = pygame.Rect(570, 215, 140, 20)
+        self.cup = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "cup.wav"))
+        self.cup.set_volume(1.0)
+        self.garb = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "garb.wav"))
+        self.garb.set_volume(1.0)
+        self.elevator = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "elevator.wav"))
+        self.elevator.set_volume(1.0)
+        self.electrocute = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "electrocute.wav"))
+        self.electrocute.set_volume(1.0)
 
     def create_world(self):
         # Create objects
@@ -256,7 +268,7 @@ class Office(Level, EventHandlerMixin):
                     self.world.NPCs["rival"].set_anim("A")
                     self.world.NPCs["rival"].is_animating = False
                     self.world.NPCs["rival"].nudge(-83, -45)
-                    self.world.NPCs["rival"].set_z = 0
+                    self.world.NPCs["rival"].set_z = -30
                 self._animate(self.world.NPCs["rival"], anim_once=True)
             elif not self.door_open:
                 if self.world.NPCs["rival"].is_animating and self.world.NPCs["rival"].current_anim == "A":
@@ -307,6 +319,7 @@ class Office(Level, EventHandlerMixin):
             self.world.NPCs["guy"].fps = 8
             self.world.NPCs["guy"].set_anim("E")
             self.sparked = True
+            self.electrocute.play(999)
             self.allow_move = False
 
     def __check_chair_collision(self):
