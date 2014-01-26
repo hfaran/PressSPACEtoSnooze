@@ -304,7 +304,7 @@ class Hills(Level, EventHandlerMixin):
                 1 if len(self._swag_words) < NUM_SWAG_WORDS else 0)
                 # ^ If got any swag words, go to "middle-ground" office
 
-        if self.game_time.total_seconds() >= 15:  # TODO make 30 dev: 5
+        if self.game_time.total_seconds() >= 30:  # TODO make 30 dev: 5
             if not self.dead:
                 self.crash.play()
                 pygame.mixer.music.set_volume(.3)

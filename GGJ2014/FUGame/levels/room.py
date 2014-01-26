@@ -90,7 +90,7 @@ class Room(Level, EventHandlerMixin):
         self.display_cmd = False
         self.allow_move = False
         self.is_waking = False
-        self.snooze_length = 3  # TODO MAKE 9 DEV: 3
+        self.snooze_length = 7  # TODO MAKE 9 DEV: 3
         self.msg_count = 0
         self.phone = self.Phone()
         self.game_over = False
@@ -401,7 +401,7 @@ class Room(Level, EventHandlerMixin):
                             self.alarm_on = True
 
                 if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and \
-                        self.game_time.total_seconds() > 9:  # TODO make 39 DEV: 9
+                        self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
                     self._animate(self.world.static["cell"])
 
                     if not self.phone.up:

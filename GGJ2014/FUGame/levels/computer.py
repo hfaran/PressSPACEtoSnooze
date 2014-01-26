@@ -12,7 +12,7 @@ from FUGame.utils import utils
 from FUGame.swagwords import SwagWord
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
-aN = 1.0  # TODO make 3.0 dev: 1.0
+aN = 1.5  # TODO make 3.0 dev: 1.0
 NaN = aN * 8.0
 
 class EventHandlerMixin(BaseEventHandlerMixin):
@@ -137,7 +137,7 @@ class Computer(Level, EventHandlerMixin):
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
         # xrange(len(self._code))])
-        return ("; ").join(self._code[31:self._space_count + 31])  # TODO Make sure this starts at proper
+        return ("; ").join(self._code[35:self._space_count + 35])  # TODO Make sure this starts at proper
 
     def _draw_space(self, screen):
         utils.drawText(
