@@ -34,7 +34,7 @@ FU_CREDITS = [
     "MUSIC",
     "ALICE SHANG",
     "",
-    "Sound FX",
+    "SOUND FX",
     "TREE OF AUDIO",
 
 ]

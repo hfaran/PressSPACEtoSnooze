@@ -309,8 +309,12 @@ class Office(Level, EventHandlerMixin):
     def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
-            if not (s.name == "elevatorR" or s.name == "elevatorL") or not self.door_open:
-                screen.blit(s.current_frame, s.pos)
+            if (s.name == "elevatorR" or s.name == "elevatorL") and self.door_open:
+                s.set_anim("N")
+            elif (s.name == "elevatorR" or s.name == "elevatorL") and not self.door_open:
+                s.set_anim("I")
+
+            screen.blit(s.current_frame, s.pos)
 
         if self.sparked:
             screen.blit(self.credits.rect, (0, 0))

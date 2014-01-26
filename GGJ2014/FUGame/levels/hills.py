@@ -56,9 +56,10 @@ class Hills(Level, EventHandlerMixin):
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.credits = self.Credits()
         pygame.mixer.music.load(
-            os.path.join(FU_APATH, "music", "manicfrolic.wav"))
+            os.path.join(FU_APATH, "music", "manicfrolic.ogg"))
         pygame.mixer.music.set_volume(0.75)
         pygame.mixer.music.play(999)
+        self.crash = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "crash.wav"))
 
         self._swag_word_list = FU_SWAG_WORDS[:]
 
@@ -256,7 +257,8 @@ class Hills(Level, EventHandlerMixin):
 
         if self.game_time.total_seconds() >= 15:  # TODO make 30 dev: 5
             if not self.dead:
-            # TODO play car cash
+                self.crash.play()
+                pygame.mixer.music.set_volume(.3)
                 self.dead = True
                 pass
             else:
