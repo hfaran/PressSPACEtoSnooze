@@ -362,7 +362,7 @@ class Room(Level, EventHandlerMixin):
 
                 if self.door_rect.colliderect(self.guy.col_rect):
                     pygame.mixer.stop()
-                    raise utils.NextLevelException("office", 0)
+                    raise utils.NextLevelException("computer", 0)
 
                 if not self.allow_move:
                     if self.guy.pos[0] < 425:
@@ -412,6 +412,7 @@ class Room(Level, EventHandlerMixin):
                             self.game_over = True
                         self.msg_count += 1
                         self.vibrate.play(maxtime=5000)
+
 
                 else:
                     self.world.static["cell"].set_anim("I")

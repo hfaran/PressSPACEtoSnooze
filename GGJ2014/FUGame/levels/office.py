@@ -20,15 +20,20 @@ class EventHandlerMixin(BaseEventHandlerMixin):
     def _use(self):
         self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
-            if s.use_func and s.sprite_rect.colliderect(
-                    self.world.NPCs["guy"].sprite_rect):
+            if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()
-            elif s.name == "garbageCan" and s.sprite_rect.colliderect(
+                break
+            elif s.name == "garbageCan" and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
+                s.is_animating = True
+                break
+            elif not self.coffee_spilt and s.name == "coffee" and s.sprite_rect.colliderect(
                     self.world.NPCs["guy"].sprite_rect):
-                        s.is_animating = True
-            elif s.name == "coffee" and s.sprite_rect.colliderect(
-                    self.world.NPCs["guy"].sprite_rect):
-                        self.coffee_spilt = True
+                self.coffee_spilt = True
+                self.door_open = True
+                break
+        if self.coffee_spilt and self.check_rival_collision():
+            self.door_open = False
+            self.world.NPCs["rival"].is_animating = True
 
 
     @property
@@ -46,17 +51,16 @@ class Office(Level, EventHandlerMixin):
         self.sparked = False
         self.credits = self.Credits()
         self.coffee_spilt = False
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
-        pygame.mixer.music.set_volume(0.75)
-        pygame.mixer.music.play(999)
+        self.door_open = False
+        self.door_rect = pygame.Rect(570, 215, 140, 20)
 
     def create_world(self):
         # Create objects
         chars = {
             "guy": Character(
                 filename="main",
-                x=560,
-                y=90,
+                x=420,
+                y=240,
                 z=0,
                 col_pts=[],
                 col_x_offset=50,
@@ -181,7 +185,7 @@ class Office(Level, EventHandlerMixin):
             y=0
         )
 
-        world.NPCs["guy"].set_anim("F")
+        world.NPCs["guy"].set_anim("R")
         world.static["sparks"].is_animating = True
 
         return world
@@ -207,6 +211,7 @@ class Office(Level, EventHandlerMixin):
 
             # Events
             self.__check_sparks_collision()
+            self.__check_chair_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
             self.credits.update_dt()
@@ -219,13 +224,27 @@ class Office(Level, EventHandlerMixin):
         if self.coffee_spilt:
             self._animate(self.world.static["coffee"], anim_once=True)
 
-            if not self.world.static["coffee"].is_animating:
+            if not self.world.static["coffee"].is_animating and self.door_open:
                 if self.world.NPCs["rival"].is_animating:
                     self.world.NPCs["rival"].set_anim("A")
                     self.world.NPCs["rival"].is_animating = False
                     self.world.NPCs["rival"].nudge(-83, -45)
-                    self.world.NPCs["rival"]._z = 0
+                    self.world.NPCs["rival"].set_z = 0
                 self._animate(self.world.NPCs["rival"], anim_once=True)
+            elif not self.door_open:
+                if self.world.NPCs["rival"].is_animating and self.world.NPCs["rival"].current_anim == "A":
+                    self.world.NPCs["rival"].set_anim("Z")
+                    self.world.NPCs["rival"].is_animating = False
+                elif self.world.NPCs["rival"].current_frame_num == len(self.world.NPCs["rival"].anims) - 1:
+                    self.world.NPCs["rival"].set_anim("W")
+                    self.world.NPCs["rival"].is_animating = True
+                    self.world.NPCs["rival"].nudge(83, 45)
+                    self.world.NPCs["rival"].set_z = 55
+                self._animate(self.world.NPCs["rival"], anim_once=self.world.NPCs["rival"].is_animating)
+
+            if self.door_open and self.__check_door_collision():
+                pygame.mixer.stop()
+                raise utils.NextLevelException("hills", 0)
 
         # Blitting
         self._blit(screen)
@@ -248,3 +267,19 @@ class Office(Level, EventHandlerMixin):
             self.world.NPCs["guy"].set_anim("E")
             self.sparked = True
             self.allow_move = False
+
+    def __check_chair_collision(self):
+        # colliding with sparks
+        if self.world.check_col(
+                self.world.static["officeChairMain"], self.world.NPCs["guy"]):
+            pygame.mixer.stop()
+            if self.coffee_spilt:
+                raise utils.NextLevelException("computer", 1)
+            else:
+                raise utils.NextLevelException("computer", 0)
+
+    def __check_door_collision(self):
+        return self.world.NPCs["guy"].sprite_rect.colliderect(self.door_rect)
+
+    def check_rival_collision(self):
+        return self.world.NPCs["guy"].sprite_rect.colliderect(self.world.NPCs["rival"].sprite_rect)
