@@ -70,6 +70,10 @@ class Sprite(object):
         self._x = x
         self._y = y
 
+    def nudge(self, x, y):
+        self._x += x
+        self._y += y
+
     def set_z(self, z):
         self._z = z
 
