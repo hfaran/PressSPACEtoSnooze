@@ -275,7 +275,7 @@ class Room(object, EventHandlerMixin):
             self.world.NPCs["guy"].set_z(0)
 
         if self.door_rect.colliderect(sprite_rect):
-            raise utils.NextLevelException("work", 0)
+            raise utils.NextLevelException("office", 0)
 
         self.game_time = datetime.now() - self.start_time
         self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
