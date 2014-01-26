@@ -91,6 +91,7 @@ class Room(Level, EventHandlerMixin):
         self.snooze_count = 0
         pygame.mixer.init()
         pygame.mixer.music.load(os.path.join(FU_APATH, "soundFX", "alarm.mp3"))
+        self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
         self.alarm_on = False
 
         self.sky = Sprite(
@@ -388,6 +389,7 @@ class Room(Level, EventHandlerMixin):
                         self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
                         self.game_over = True
                     self.msg_count += 1
+                    self.vibrate.play(maxtime=5000)
 
             else:
                 self.world.static["cell"].set_anim("I")
