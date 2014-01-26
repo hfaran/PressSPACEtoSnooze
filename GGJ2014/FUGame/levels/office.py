@@ -1,4 +1,5 @@
 import pygame
+import os
 from pygame.locals import *
 
 from FUGame.character import Character, Sprite
@@ -45,6 +46,8 @@ class Office(Level, EventHandlerMixin):
         self.sparked = False
         self.credits = self.Credits()
         self.coffee_spilt = False
+        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.wav"))
+        pygame.mixer.music.play(999)
 
     def create_world(self):
         # Create objects
