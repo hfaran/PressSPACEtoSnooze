@@ -7,12 +7,12 @@ from FUGame.world import World
 from FUGame.constants import *
 from FUGame.utils import utils
 from FUGame.levels.level import Level, BaseEventHandlerMixin
+from datetime import datetime
 
 from random import randint
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
-
     def _use(self):
         raise NotImplementedError
 
@@ -24,10 +24,16 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 
 
 class Hills(Level, EventHandlerMixin):
-
     def __init__(self, state=0):
         self.world = self.create_world()
         self.allow_move = True
+        self.start_time = datetime.now()
+        self.game_time = datetime.now() - self.start_time
+        self.dead = False
+        self.credits = self.Credits()
+        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "manicfrolic.wav"))
+        pygame.mixer.music.set_volume(0.75)
+        pygame.mixer.music.play(999)
 
     def create_world(self):
         chars = {
@@ -75,11 +81,33 @@ class Hills(Level, EventHandlerMixin):
     def update_loop(self, screen, game_clock):
         self._animate_sprites()
         self._move_npcs(game_clock)
+        self.game_time = datetime.now() - self .start_time
+
+        if self.game_time.total_seconds() >= 5:  # TODO make 30 dev: 5
+            if not self.dead:
+            # TODO play car cash
+                self.dead = True
+                pass
+            else:
+                self.credits.update_dt()
+                if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
+                    self.credits.update_credits()
+                if self.credits.end:
+                    pygame.mixer.stop()
+                    raise utils.NextLevelException("room", 0)
+
 
         # Blitting
         self._blit(screen)
 
     def _blit(self, screen):
-        screen.blit(self.world.bg, self.world.pos)
-        for s in self.world.sprites:
-            screen.blit(s.current_frame, s.pos)
+        if not self.dead:
+            screen.blit(self.world.bg, self.world.pos)
+            for s in self.world.sprites:
+                screen.blit(s.current_frame, s.pos)
+        else:
+            screen.fill((0, 0, 0))
+            screen.blit(self.credits.rect, (0, 0))
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+
+

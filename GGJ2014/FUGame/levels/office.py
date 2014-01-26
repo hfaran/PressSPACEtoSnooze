@@ -52,6 +52,9 @@ class Office(Level, EventHandlerMixin):
         self.credits = self.Credits()
         self.coffee_spilt = False
         self.door_open = False
+        self.cmd_font = pygame.font.SysFont("verdana", 48)
+        self.display_cmd = False
+        self.cmd = "Press 'SPACE' to Apologize"
         self.door_rect = pygame.Rect(570, 215, 140, 20)
 
     def create_world(self):
@@ -246,6 +249,14 @@ class Office(Level, EventHandlerMixin):
                 pygame.mixer.stop()
                 raise utils.NextLevelException("hills", 0)
 
+            if self.door_open:
+                if self.check_rival_collision():
+                    self.display_cmd = True
+                else:
+                    self.display_cmd = False
+            else:
+                self.display_cmd = False
+
         # Blitting
         self._blit(screen)
 
@@ -257,6 +268,9 @@ class Office(Level, EventHandlerMixin):
         if self.sparked:
             screen.blit(self.credits.rect, (0, 0))
             [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+
+        if self.display_cmd:
+            screen.blit(self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
 
     def __check_sparks_collision(self):
@@ -282,4 +296,4 @@ class Office(Level, EventHandlerMixin):
         return self.world.NPCs["guy"].sprite_rect.colliderect(self.door_rect)
 
     def check_rival_collision(self):
-        return self.world.NPCs["guy"].sprite_rect.colliderect(self.world.NPCs["rival"].sprite_rect)
+        return self.world.NPCs["guy"].col_rect.colliderect(self.world.NPCs["rival"].sprite_rect)

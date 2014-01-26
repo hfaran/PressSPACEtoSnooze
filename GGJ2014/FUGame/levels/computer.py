@@ -47,11 +47,14 @@ class Computer(Level, EventHandlerMixin):
         self.disp_time = datetime.now()
         # Press Space to do stuff bar
         self.display_cmd = True
-        self._space_message = 'Press SPACE to work'
+        self._space_message = "Press 'SPACE' to Work"
         self._space_rect = pygame.Rect(FU_CMD_POS[0], FU_CMD_POS[1], 1280, 300)
         self._space_font = pygame.font.SysFont("verdana", 48)
         self._space_count = 1
         self.allow_move = False
+        self.paper = pygame.image.load(
+            os.path.join(FU_APATH, "backgrounds", "dataPaper.png")
+        )
         # Code to display
         self._code = filter(
             lambda x: x,
@@ -100,15 +103,19 @@ class Computer(Level, EventHandlerMixin):
             raise utils.NextLevelException("office", 0)
         elif secs > self._scroll_delay:
             if secs > self._scroll_delay * 3:
-                self._space_message = "Hey! Stop slacking! Back to work! SPACEEEE!!!!!!!!"
+                self._space_message = "Hey! Stop slacking! Back to work! 'SPACEEEE!!!!!!!!'"
             elif secs > self._scroll_delay * 2:
-                self._space_message = "You haven't pressed SPACE in a while. Get to work!"
+                self._space_message = "You haven't pressed 'SPACE' in a while. Get to work!"
             elif secs > self._scroll_delay * 1:
-                self._space_message = "Press SPACE to work"
+                self._space_message = "Press 'SPACE' to Work"
             if not self.display_cmd:
                 self.display_cmd = True
         elif self._space_count == self._max_lines:
             raise utils.NextLevelException("room", 1)
+
+        screen.blit(self.paper, (0,0))
+
+
 
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
