@@ -24,4 +24,54 @@ class EventHandlerMixin:
 
 
 class Office(object, EventHandlerMixin):
-    pass
+
+    def _init_(self):
+        self.world = self.create_world()
+
+    def create_world(self):
+        # Create objects
+        chars = {
+            "guy": Character(
+                filename="main",
+                x=560,
+                y=190,
+                z=0,
+                col_pts=[],
+                col_x_offset=7,
+                col_y_offset=92,
+                fps=4,
+                speed=5
+            ),
+        }
+
+        statics = {
+
+        }
+
+        world = World(
+            level_id="office",
+            bg_filename="office_bg",
+            static=statics,
+            NPCs=chars,
+            col_pts=[(60, 500), (100, 500), (160, 500), (172, 446), (200, 366), (211, 291), (275, 293), (540, 293),
+                     (0, 0)],
+            x=0,
+            y=0
+        )
+
+        world.NPCs["guy"].set_anim("F")
+
+        return world
+
+    def handle_events(self, event):
+        keys = pygame.key.get_pressed()
+        for key, l in self.event_map.iteritems():
+            func, args = l
+            if keys[key]:
+                func(*args)
+                return True
+        else:
+            self.world.NPCs["guy"].is_moving = False
+            return False
+
+
