@@ -11,7 +11,7 @@ FU_DIRECTS = {
     "R": (1,  0),
 }
 
-FU_LEVELS = ["room", "computer", "office", "hills"]
+FU_LEVELS = ["title", "room", "computer", "office", "hills"]
 
 FU_CMD_POS = (50, 650)
 FU_CMD_COLOR = (211, 226, 33)
@@ -40,7 +40,11 @@ FU_CREDITS = [
 ]
 
 # Use this like self.my_var = FU_SWAG_WORDS[:], i.e., crreate a copy!!!!!
-FU_SWAG_WORDS = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!", "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!", "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!", "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!", "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
+FU_SWAG_WORDS = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!",
+                 "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!",
+                 "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!",
+                 "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!",
+                 "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
 
 
 #assert all(i.startswith("FU_") for i in __all__)
