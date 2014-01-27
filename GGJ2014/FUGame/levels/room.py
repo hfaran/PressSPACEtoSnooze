@@ -90,7 +90,7 @@ class Room(Level, EventHandlerMixin):
         self.display_cmd = False
         self.allow_move = False
         self.is_waking = False
-        self.snooze_length = 7  # TODO MAKE 9 DEV: 3
+        self.snooze_length = 5  # TODO MAKE 9 DEV: 3
         self.msg_count = 0
         self.phone = self.Phone()
         self.game_over = False

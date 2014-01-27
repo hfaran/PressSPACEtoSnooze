@@ -12,7 +12,7 @@ from FUGame.utils import utils
 from FUGame.swagwords import SwagWord
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
-aN = 1.5  # TODO make 3.0 dev: 1.0
+aN = 1.0
 NaN = aN * 8.0
 
 class EventHandlerMixin(BaseEventHandlerMixin):
