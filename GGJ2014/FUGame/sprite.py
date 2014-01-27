@@ -115,7 +115,7 @@ class Sprite(object):
 
     def load_frames(self):
         path = os.path.join("assets", "sprites", self.name)
-        l = sorted(os.listdir(path))
+        l = sorted([p for p in os.listdir(path) if os.path.isdir(os.path.join(path, p))])
         d = {
             folder_name: [pygame.image.load(
                 os.path.join(path, folder_name, image)
