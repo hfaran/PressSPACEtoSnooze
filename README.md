@@ -1,6 +1,9 @@
+![Title](http://i.imgur.com/QAnWnGy.png "Title")
+
 # Press 'SPACE' to Snooze
 
 ![Screenshot](http://globalgamejam.org/sites/default/files/styles/game_content__narrow/public/games/screenshots/02_5.png?itok=F6SwhADm "Screenshot")
+
 
 Well, you press 'Space' to snooze, then you snooze... (or do you?) It's all about escaping the mundane, and how we see the world as WE are, rather than how it really is. ENJOY! :)
 
