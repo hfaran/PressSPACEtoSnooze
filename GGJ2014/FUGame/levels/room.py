@@ -405,8 +405,9 @@ class Room(Level, EventHandlerMixin):
                             self.alarm.play(999)
                             self.alarm_on = True
 
-                if 0 <= (self.game_time + 51) % 30 <= 5 and \
-                        self.game_time > 39:  # TODO make 39 DEV: 9
+                wait_time = 24
+                if 0 <= (self.game_time + 51) % wait_time <= 5 and \
+                        self.game_time > wait_time+9:  # TODO make 39 DEV: 9
                     self._animate(self.world.static["cell"])
 
                     if not self.phone.up:
