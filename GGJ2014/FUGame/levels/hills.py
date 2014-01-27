@@ -311,7 +311,7 @@ class Hills(Level, EventHandlerMixin):
                 self.dead = True
                 pass
             else:
-                self.cmd = "Press 'SPACE' to Speed Up"
+                self.cmd = "Tap 'SPACE' to Speed Up"
                 self.display_cmd = True
                 self.credits.update_dt()
                 if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
