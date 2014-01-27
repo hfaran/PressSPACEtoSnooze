@@ -135,8 +135,8 @@ class Room(Level, EventHandlerMixin):
 
         self.snooze_time = datetime.now()
         self.start_time = datetime.now()
-        self.game_time = datetime.now() - self.start_time
-        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+        self._game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time)
         self.clock_text = self.clock_font.render(
             self.clock_time, True, (0, 255, 0))
 
@@ -146,6 +146,10 @@ class Room(Level, EventHandlerMixin):
             self.guy.direction = "R"
             self.guy.is_animating = False
             self.guy.is_moving = True
+
+    @property
+    def game_time(self):
+        return self._game_time.total_seconds() * float(FU_ROOM_SPEED)
 
     def seconds_to_time(self, secs):
         secs = secs + 51 + 5 * 60
@@ -359,8 +363,9 @@ class Room(Level, EventHandlerMixin):
                 self.guy.is_moving = False
                 self.game_over = True
 
-        self.game_time = datetime.now() - self.start_time
-        self.clock_time = self.seconds_to_time(self.game_time.total_seconds())
+
+        self._game_time = datetime.now() - self.start_time
+        self.clock_time = self.seconds_to_time(self.game_time)
         self.clock_text = self.clock_font.render(
             self.clock_time, True, FU_CMD_COLOR)
 
@@ -400,8 +405,8 @@ class Room(Level, EventHandlerMixin):
                             self.alarm.play(999)
                             self.alarm_on = True
 
-                if 0 <= (self.game_time.total_seconds() + 51) % 30 <= 5 and \
-                        self.game_time.total_seconds() > 39:  # TODO make 39 DEV: 9
+                if 0 <= (self.game_time + 51) % 30 <= 5 and \
+                        self.game_time > 39:  # TODO make 39 DEV: 9
                     self._animate(self.world.static["cell"])
 
                     if not self.phone.up:

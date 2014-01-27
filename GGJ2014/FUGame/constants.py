@@ -3,6 +3,7 @@ FU_APATH = "assets"
 FU_WIDTH = 1366
 FU_HEIGHT = 768
 FU_FRAME_RATE = 30
+FU_ROOM_SPEED = 1.5
 
 FU_DIRECTS = {
     "F": (0,  1),
