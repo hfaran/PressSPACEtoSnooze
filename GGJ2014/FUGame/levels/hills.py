@@ -319,7 +319,7 @@ class Hills(Level, EventHandlerMixin):
                 if self.credits.end:
                     pygame.mixer.music.stop()
                     pygame.mixer.stop()
-                    raise utils.NextLevelException("room", 0)
+                    raise utils.NextLevelException("instructions", 0)
 
         if self.world.static["flowers"].current_frame_num == 3 or self.world.static["flowers"].current_frame_num == 9:
             self.punch0.play()

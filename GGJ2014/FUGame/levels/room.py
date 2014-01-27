@@ -454,7 +454,7 @@ class Room(Level, EventHandlerMixin):
                 self.credits.update_credits()
             if self.credits.end:
                 pygame.mixer.stop()
-                raise utils.NextLevelException("room", 0)
+                raise utils.NextLevelException("instructions", 0)
 
         # CALL TO self._blit #
         self._blit(screen)

@@ -266,7 +266,7 @@ class Office(Level, EventHandlerMixin):
                 self.credits.update_credits()
             if self.credits.end:
                 pygame.mixer.stop()
-                raise utils.NextLevelException("room", 0)
+                raise utils.NextLevelException("instructions", 0)
 
         if self.coffee_spilt:
             self._animate(self.world.static["coffee"], anim_once=True)
