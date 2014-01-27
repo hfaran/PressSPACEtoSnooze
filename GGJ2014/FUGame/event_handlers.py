@@ -19,5 +19,5 @@ def click_handle(event):
 
 EVENT_MAP = {
     KEYDOWN: key_handle,
-    MOUSEBUTTONDOWN: click_handle
+    #MOUSEBUTTONDOWN: click_handle
 }

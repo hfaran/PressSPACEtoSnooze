@@ -10,24 +10,24 @@ from FUGame.levels.level import Level, BaseEventHandlerMixin
 class EventHandlerMixin(BaseEventHandlerMixin):
 
     def _use(self):
-        raise utils.NextLevelException("instructions", 0)
+        raise utils.NextLevelException("room", 0)
 
     @property
     def event_map(self):
         _event_map = dict(self._move_event_map)
-        _event_map[K_RETURN] = [self._use, ()]
+        _event_map[K_SPACE] = [self._use, ()]
         return _event_map
 
 
-class Title(Level, EventHandlerMixin):
+class Instructions(Level, EventHandlerMixin):
 
     def __init__(self, state=0):
         self.world = self.create_world()
 
     def create_world(self):
         world = World(
-            level_id="title",
-            bg_filename="title_bg",
+            level_id="instructions",
+            bg_filename="instructions_bg",
             static=None,
             NPCs=None,
             col_pts=[],
