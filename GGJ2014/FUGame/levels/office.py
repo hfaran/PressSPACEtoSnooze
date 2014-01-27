@@ -18,6 +18,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
     #     }
 
     def _use(self):
+        self._check_chair_collision()
         self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
@@ -256,7 +257,6 @@ class Office(Level, EventHandlerMixin):
 
             # Events
             self.__check_sparks_collision()
-            self.__check_chair_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
             self.cmd = "Press 'SPACE' to Speed Up"
@@ -336,7 +336,7 @@ class Office(Level, EventHandlerMixin):
             self.electrocute.play(999)
             self.allow_move = False
 
-    def __check_chair_collision(self):
+    def _check_chair_collision(self):
         # colliding with sparks
         if self.world.check_col(
                 self.world.static["officeChairMain"], self.world.NPCs["guy"]):
