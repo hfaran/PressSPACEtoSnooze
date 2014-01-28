@@ -23,7 +23,8 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             self.credits.speed += 5
         self.world.NPCs["guy"].set_anim(
             "{}S".format(self.world.NPCs["guy"].direction))
-        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
+        self.world.NPCs["guy"].set_anim(
+            "{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()
@@ -35,13 +36,11 @@ class EventHandlerMixin(BaseEventHandlerMixin):
             if w.rect.colliderect(self.guy.sprite_rect):
                 self._swag_words.remove(w)
 
-
     @property
     def event_map(self):
         _event_map = dict(self._move_event_map)
         _event_map[K_SPACE] = [self._use, ()]
         return _event_map
-
 
 
 class SwagWord(object):
@@ -53,10 +52,12 @@ class SwagWord(object):
         self.gen_new_rect()
         self.font = pygame.font.SysFont("comicsansms", 24)
         self.fc = 0
-        self.freq = randint(3,10)
-        self.punch0 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
+        self.freq = randint(3, 10)
+        self.punch0 = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
         self.punch0.set_volume(0.15)
-        self.punch1 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
+        self.punch1 = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
         self.punch1.set_volume(0.15)
 
     def gen_new_rect(self):
@@ -66,7 +67,7 @@ class SwagWord(object):
 
     def draw(self, screen):
         self.fc = (self.fc + 1) % self.freq
-        if self.fc < self.freq/2:
+        if self.fc < self.freq / 2:
             utils.drawText(
                 screen,
                 self.word,
@@ -75,6 +76,7 @@ class SwagWord(object):
                 self.font,
                 aa=True
             )
+
 
 class Hills(Level, EventHandlerMixin):
 
@@ -89,19 +91,23 @@ class Hills(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.credits = self.Credits()
-        self.punch0 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
+        self.punch0 = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "punch_00.wav"))
         self.punch0.set_volume(0.15)
-        self.punch1 = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
+        self.punch1 = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "punch_01.wav"))
         self.punch1.set_volume(0.15)
         pygame.mixer.music.load(
             os.path.join(FU_APATH, "music", "manicfrolic.ogg"))
         pygame.mixer.music.set_volume(0.75)
         pygame.mixer.music.play(999)
-        self.crash = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "crash.wav"))
+        self.crash = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "crash.wav"))
 
         self._swag_word_list = FU_SWAG_WORDS[:]
 
-        self._swag_words = [SwagWord(choice(self._swag_word_list)) for i in xrange(NUM_SWAG_WORDS)]
+        self._swag_words = [SwagWord(choice(self._swag_word_list))
+                            for i in xrange(NUM_SWAG_WORDS)]
 
     def create_world(self):
         chars = {
@@ -296,7 +302,13 @@ class Hills(Level, EventHandlerMixin):
         self._move_npcs(game_clock)
         self.game_time = datetime.now() - self .start_time
 
-        if self.guy.col_rect.collidepoint(200, 326):
+        # If player wants to exit back to office
+        if any(
+            map(
+                self.guy.col_rect.collidepoint,
+                [(200, 326), (160, 344), (190, 328), (223, 319)]
+            )
+        ):
             pygame.mixer.music.stop()
             pygame.mixer.stop()
             raise utils.NextLevelException(
@@ -346,5 +358,3 @@ class Hills(Level, EventHandlerMixin):
         if self.display_cmd:
             screen.blit(
                 self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
-
-
