@@ -302,7 +302,13 @@ class Hills(Level, EventHandlerMixin):
         self._move_npcs(game_clock)
         self.game_time = datetime.now() - self .start_time
 
-        if self.guy.col_rect.collidepoint(200, 326):
+        # If player wants to exit back to office
+        if any(
+            map(
+                self.guy.col_rect.collidepoint,
+                [(200, 326), (160, 344), (190, 328), (223, 319)]
+            )
+        ):
             pygame.mixer.music.stop()
             pygame.mixer.stop()
             raise utils.NextLevelException(
