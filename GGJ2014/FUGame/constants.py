@@ -41,11 +41,28 @@ FU_CREDITS = [
 ]
 
 # Use this like self.my_var = FU_SWAG_WORDS[:], i.e., crreate a copy!!!!!
-FU_SWAG_WORDS = ["SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!",
-                 "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!", "SO GOOD!",
-                 "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!", "GLEE-SPLOSION!",
-                 "SMILE TOWN!", "AWESOME!", "GLEE-SUPREME!", "MAXIMUM HAPPY!",
-                 "RAINBOWS FOR DAYS!", "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"]
+FU_SWAG_WORDS = [
+    "SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!",
+    "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!",
+    "SO GOOD!", "SUNSHINE!", "AWESOME-TASTIC!", "SILKY SMOOTH!",
+    "GLEE-SPLOSION!", "SMILE TOWN!", "AWESOME!",
+    "GLEE-SUPREME!", "MAXIMUM HAPPY!", "RAINBOWS FOR DAYS!",
+    "CLEAR SKIES!", "FREE HUGS!", "GRIN-TO-WIN!"
+]
 
+FU_BORED_COMMENTS = [
+    "Man, this kinda sucks.",
+    "I wonder how long this will take.",
+    "Maybe I should go say hello to Greg",
+    "I wonder why he isn't drinking his coffee; it'll get cold.",
+    "I wonder what'll happen if I just stop typing...",
+    "The boss will probably be all over me.",
+    "I hate him.",
+    "I hate this.",
+    "I hate life.",
+    "I really wish I was somewhere else right now.",
+    "I should just stop typing.",
+    "Screw the world!",
+]
 
 #assert all(i.startswith("FU_") for i in __all__)
