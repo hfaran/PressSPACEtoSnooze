@@ -67,7 +67,7 @@ class Computer(Level, EventHandlerMixin):
             open(os.path.join("FUGame", "levels", "computer.py"),
                  "r").read().split("\n")
         )
-        self._bcgen = cycle(FU_BORED_COMMENTS)
+        self._bcgen = cycle(FU_SWAG_WORDS if state in [2] else FU_BORED_COMMENTS)
         self._bored_comments = []
         self._code_text = self.get_code_text()
         self._code_rect = pygame.Rect(250, 100, 750, 500)
