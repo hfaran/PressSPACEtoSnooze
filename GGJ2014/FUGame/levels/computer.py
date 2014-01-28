@@ -4,6 +4,7 @@ from pygame.locals import *
 import os
 from random import choice
 from datetime import datetime
+from itertools import cycle, chain
 
 from FUGame.character import Character, Sprite
 from FUGame.world import World
@@ -55,7 +56,7 @@ class Computer(Level, EventHandlerMixin):
         self._space_message = "Press 'SPACE' to Enter Data"
         self._space_rect = pygame.Rect(FU_CMD_POS[0], FU_CMD_POS[1], 1280, 300)
         self._space_font = pygame.font.SysFont("verdana", 48)
-        self._space_count = 1
+        self._space_count = 0
         self.allow_move = False
         self.paper = pygame.image.load(
             os.path.join(FU_APATH, "backgrounds", "dataPaper.png")
@@ -66,6 +67,8 @@ class Computer(Level, EventHandlerMixin):
             open(os.path.join("FUGame", "levels", "computer.py"),
                  "r").read().split("\n")
         )
+        self._bcgen = cycle(FU_SWAG_WORDS if state in [2] else FU_BORED_COMMENTS)
+        self._bored_comments = []
         self._code_text = self.get_code_text()
         self._code_rect = pygame.Rect(250, 100, 750, 500)
         self._code_font = pygame.font.SysFont("courier_new", 20)
@@ -137,7 +140,13 @@ class Computer(Level, EventHandlerMixin):
     def get_code_text(self):
         # return (" " * 10).join([choice(self._code) for i in
         # xrange(len(self._code))])
-        return ("; ").join(self._code[35:self._space_count + 35])  # TODO Make sure this starts at proper
+        while len(self._bored_comments) < self._space_count:
+            self._bored_comments.append(self._bcgen.next())
+        # TODO Make sure this starts at proper
+        code = self._code[37:self._space_count + 37]
+        return ("  # ").join(
+            list(chain(*zip(code, self._bored_comments)))
+        )
 
     def _draw_space(self, screen):
         utils.drawText(
