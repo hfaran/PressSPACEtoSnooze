@@ -27,7 +27,7 @@ class Game(object):
         self.screen = pygame.display.set_mode(
             (FU_WIDTH, FU_HEIGHT),
         )
-        pygame.display.set_caption('FUGame')
+        pygame.display.set_caption('Press \'SPACE\' to Snooze')
         self.clock = pygame.time.Clock()
 
         # Levels
