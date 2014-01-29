@@ -28,7 +28,7 @@ def click_handle(event):
         sys.stdout.write(s)
 
 EVENT_MAP = {
-    QUIT: quit
+    QUIT: quit,
     KEYDOWN: key_handle,
     MOUSEBUTTONDOWN: click_handle
 }

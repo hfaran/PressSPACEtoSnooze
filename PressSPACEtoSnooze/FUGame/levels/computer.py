@@ -17,6 +17,7 @@ from FUGame.levels.level import Level, BaseEventHandlerMixin
 # The following for a self-referential joke
 aN = 1.0
 NaN = aN * 8.0
+CODE_START = 40
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
@@ -147,7 +148,7 @@ class Computer(Level, EventHandlerMixin):
         while len(self._bored_comments) < self._space_count:
             self._bored_comments.append(self._bcgen.next())
         # TODO Make sure this starts at proper
-        code = self._code[37:self._space_count + 37]
+        code = self._code[CODE_START:self._space_count + CODE_START]
         return ("  # ").join(
             list(chain(*zip(code, self._bored_comments)))
         )

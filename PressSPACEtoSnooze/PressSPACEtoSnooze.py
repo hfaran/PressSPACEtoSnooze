@@ -20,8 +20,8 @@ class Game(object):
         pygame.init()
 
         if FU_FULLSCREEN:
-            self.screenInfo = pygame.display.Info()
-            screen = pygame.display.set_mode(
+            screenInfo = pygame.display.Info()
+            self.screen = pygame.display.set_mode(
                 (screenInfo.current_w, screenInfo.current_h),
                 pygame.FULLSCREEN
             )
