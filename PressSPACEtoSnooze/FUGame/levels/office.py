@@ -10,16 +10,11 @@ from FUGame.levels.level import Level, BaseEventHandlerMixin
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
-    # @property
-    # def seqd(self):
-    #     """Sequence dict"""
-    #     return {
-    #         "sit_chair":
-    #     }
 
     def _use(self):
         self._check_chair_collision()
-        self.world.NPCs["guy"].set_anim("{}S".format(self.world.NPCs["guy"].direction))
+        self.world.NPCs["guy"].set_anim(
+            "{}S".format(self.world.NPCs["guy"].direction))
         for s in self.world.static.values():
             if s.use_func and s.sprite_rect.colliderect(self.world.NPCs["guy"].sprite_rect):
                 s.use_func()
@@ -42,7 +37,6 @@ class EventHandlerMixin(BaseEventHandlerMixin):
         elif self.sparked:
             self.credits.speed += 5
 
-
     @property
     def event_map(self):
         _event_map = dict(self._move_event_map)
@@ -51,6 +45,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
 
 
 class Office(Level, EventHandlerMixin):
+
     def __init__(self, state=0):
         self.world = self.create_world()
         self.state = state
@@ -63,22 +58,25 @@ class Office(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd = "Press 'SPACE' to Apologize"
         self.door_rect = pygame.Rect(570, 215, 140, 20)
-        self.cup = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "cup.wav"))
+        self.cup = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "cup.wav"))
         self.cup.set_volume(1.0)
-        self.garb = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "garb.wav"))
+        self.garb = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "garb.wav"))
         self.garb.set_volume(1.0)
-        self.elevator = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "elevator.wav"))
+        self.elevator = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "elevator.wav"))
         self.elevator.set_volume(1.0)
-        self.electrocute = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "electrocute.wav"))
+        self.electrocute = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "electrocute.wav"))
         self.electrocute.set_volume(1.0)
         # Play swag office if state 1
-        #print state
         if self.state in [1]:
             pygame.mixer.init()
-            pygame.mixer.music.load(os.path.join(FU_APATH, "music", "swagoffice.ogg"))
+            pygame.mixer.music.load(
+                os.path.join(FU_APATH, "music", "swagoffice.ogg"))
             pygame.mixer.music.set_volume(0.6)
             pygame.mixer.music.play()
-
 
     def create_world(self):
         # Create objects
@@ -117,7 +115,11 @@ class Office(Level, EventHandlerMixin):
                 z=0,
                 col_pts=[(60, 0), (80, 0), (100, 0), (120, 0), (132, 0),
                          (0, 80), (0, 100), (0, 109),
-                         (20, 109), (40, 109), (60, 109), (80, 109), (100, 109), (120, 109), (132, 109),
+                         (20, 109), (40, 109), (60, 109), (80,
+                                                           109), (
+                             100, 109), (
+                             120, 109), (
+                             132, 109),
                          (132, 80), (132, 100), (132, 109)],
                 col_x_offset=None,
                 col_y_offset=None
@@ -128,10 +130,18 @@ class Office(Level, EventHandlerMixin):
                 x=989,
                 y=228,
                 z=0,
-                col_pts=[(0, 0), (30, 0), (60, 0), (90, 0), (120, 0), (150, 0), (172, 0), (172, 166),
-                         (0, 30), (0, 60), (0, 90), (0, 120), (0, 150), (0, 166),
-                         (172, 30), (172, 60), (172, 90), (172, 120), (172, 150),
-                         (0, 166), (30, 166), (60, 166), (90, 166), (120, 166), (150, 166)
+                col_pts=[(
+                    0, 0), (
+                    30, 0), (
+                    60, 0), (
+                    90, 0), (
+                    120, 0), (150, 0), (172, 0), (172, 166),
+                    (0, 30), (0, 60), (0, 90), (0,
+                                                120), (0, 150), (0, 166),
+                    (172, 30), (172, 60), (172,
+                                           90), (172, 120), (172, 150),
+                    (0, 166), (30, 166), (60, 166), (90,
+                                                     166), (120, 166), (150, 166)
                 ],
                 col_x_offset=None,
                 col_y_offset=None,
@@ -142,7 +152,8 @@ class Office(Level, EventHandlerMixin):
                 x=1108,
                 y=460,
                 z=0,
-                col_pts=[(97, 59), (0, 59), (7, 21), (44, 0), (77, 11), (90, 29)],
+                col_pts=[(97, 59), (0, 59), (7, 21),
+                         (44, 0), (77, 11), (90, 29)],
                 col_x_offset=None,
                 col_y_offset=None,
             ),
@@ -212,21 +223,63 @@ class Office(Level, EventHandlerMixin):
 
         world = World(
             level_id="office",
-            #bg_filename="office_bg_placement_reference",
+            # bg_filename="office_bg_placement_reference",
             bg_filename="office_bg",
             static=statics,
             NPCs=chars,
-            col_pts=[(58, 495), (83, 495), (109, 495), (136, 495), (165, 495), (171, 468), (175, 435), (187, 402),
-                     (188, 369), (193, 347), (205, 318), (209, 288), (213, 279), (245, 275), (261, 275), (276, 275),
-                     (296, 273), (324, 273), (359, 273), (383, 273), (418, 278), (428, 292), (436, 327), (455, 328),
-                     (491, 331), (519, 334), (532, 349), (552, 345), (553, 330), (555, 312), (555, 294), (554, 271),
-                     (554, 253), (568, 220), (564, 198), (565, 175), (567, 146), (567, 120), (567, 90), (567, 56),
-                     (567, 50), (718, 53), (719, 70), (719, 101), (717, 133), (714, 175), (720, 219), (722, 251),
-                     (726, 264), (738, 294), (737, 334), (745, 350), (761, 339), (769, 319), (793, 311), (814, 311),
-                     (835, 306), (856, 306), (870, 305), (901, 300), (928, 293), (944, 295), (982, 299), (994, 301),
-                     (1045, 296), (1067, 293), (1110, 289), (1140, 316), (1124, 358), (1152, 380), (1166, 410),
-                     (1166, 437), (1174, 446), (1187, 466), (1188, 482), (1211, 499), (1239, 491), (1261, 490),
-                     (1285, 490), (1298, 488)],
+            col_pts=[(
+                58, 495), (
+                83, 495), (
+                109, 495), (
+                136, 495), (
+                165, 495), (171, 468), (175, 435), (187, 402),
+                (188, 369), (193, 347), (205, 318), (209, 288), (213,
+                                                                 279), (
+                    245, 275), (
+                    261, 275), (
+                    276, 275),
+                (296, 273), (324, 273), (359, 273), (383, 273), (418,
+                                                                 278), (
+                    428, 292), (
+                    436, 327), (
+                    455, 328),
+                (491, 331), (519, 334), (532, 349), (552, 345), (553,
+                                                                 330), (
+                    555, 312), (
+                    555, 294), (
+                    554, 271),
+                (554, 253), (568, 220), (564, 198), (565,
+                                                     175), (
+                    567, 146), (
+                    567, 120), (
+                    567, 90), (
+                    567, 56),
+                (567, 50), (718, 53), (719, 70), (719, 101), (717,
+                                                              133), (
+                    714, 175), (
+                    720, 219), (
+                    722, 251),
+                (726, 264), (738, 294), (737, 334), (745, 350), (761,
+                                                                 339), (
+                    769, 319), (
+                    793, 311), (
+                    814, 311),
+                (835, 306), (856, 306), (870, 305), (901, 300), (928,
+                                                                 293), (
+                    944, 295), (
+                    982, 299), (
+                    994, 301),
+                (1045, 296), (1067, 293), (1110, 289), (1140,
+                                                        316), (
+                    1124, 358), (
+                    1152, 380), (
+                    1166, 410),
+                (1166, 437), (1174, 446), (1187, 466), (1188,
+                                                        482), (
+                    1211, 499), (
+                    1239, 491), (
+                    1261, 490),
+                (1285, 490), (1298, 488)],
             x=0,
             y=0
         )
@@ -287,7 +340,8 @@ class Office(Level, EventHandlerMixin):
                     self.world.NPCs["rival"].is_animating = True
                     self.world.NPCs["rival"].nudge(83, 45)
                     self.world.NPCs["rival"].set_z = 55
-                self._animate(self.world.NPCs["rival"], anim_once=self.world.NPCs["rival"].is_animating)
+                self._animate(
+                    self.world.NPCs["rival"], anim_once=self.world.NPCs["rival"].is_animating)
 
             if self.door_open and self.__check_door_collision():
                 pygame.mixer.stop()
@@ -320,11 +374,12 @@ class Office(Level, EventHandlerMixin):
 
         if self.sparked:
             screen.blit(self.credits.rect, (0, 0))
-            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i])
+             for i in xrange(len(self.credits.texts))]
 
         if self.display_cmd:
-            screen.blit(self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
-
+            screen.blit(
+                self.cmd_font.render(self.cmd, True, FU_CMD_COLOR), FU_CMD_POS)
 
     def __check_sparks_collision(self):
         # colliding with sparks

@@ -54,14 +54,19 @@ class Level(object):
                 self._animate(s)
 
     class Credits:
+
         def __init__(self):
             self.credit_font = pygame.font.SysFont("verdana", 24)
             self.alpha = 0
-            self.texts = list(reversed([self.credit_font.render(FU_CREDITS[i], True, (255, 255, 255)) for i in xrange(len(FU_CREDITS))]))
+            self.texts = list(reversed([self.credit_font.render(
+                FU_CREDITS[i],
+                True,
+                (255, 255, 255)
+            ) for i in xrange(len(FU_CREDITS))]))
             self.rect = pygame.Surface((FU_WIDTH, FU_HEIGHT))
             self.rect.fill((0, 0, 0))
             self.rect.set_alpha(self.alpha)
-            self.credits_pos = ((FU_WIDTH/2, FU_HEIGHT * 1.75))
+            self.credits_pos = ((FU_WIDTH / 2, FU_HEIGHT * 1.75))
             self.texts_pos = self._texts_positions()
             self.speed = 3
             self.fps = 30
@@ -79,9 +84,10 @@ class Level(object):
                 self.rect.set_alpha(self.alpha)
 
         def scroll_credits(self):
-            self.credits_pos = self.credits_pos[0], self.credits_pos[1] - self.speed
+            self.credits_pos = self.credits_pos[
+                0], self.credits_pos[1] - self.speed
             self.texts_pos = self._texts_positions()
-            if self.credits_pos[1] + 40*len(FU_CREDITS) < 550:
+            if self.credits_pos[1] + 40 * len(FU_CREDITS) < 550:
                 self.end = True
 
         def update_credits(self):
@@ -91,5 +97,6 @@ class Level(object):
 
         def _texts_positions(self):
             return [
-                (self.credits_pos[0] - self.texts[i].get_width()/2, self.credits_pos[1] - 40*i)
+                (self.credits_pos[0] - self.texts[i]
+                 .get_width() / 2, self.credits_pos[1] - 40 * i)
                 for i in xrange(len(FU_CREDITS))]

@@ -17,16 +17,19 @@ from FUGame.utils import utils
 class Game(object):
 
     def __init__(self):
-        #pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
-        # screenInfo = pygame.display.Info()
-        # screen = pygame.display.set_mode(
-        #     (screenInfo.current_w, screenInfo.current_h),
-        #     pygame.FULLSCREEN
-        # )
-        self.screen = pygame.display.set_mode(
-            (FU_WIDTH, FU_HEIGHT),
-        )
+
+        if FU_FULLSCREEN:
+            screenInfo = pygame.display.Info()
+            self.screen = pygame.display.set_mode(
+                (screenInfo.current_w, screenInfo.current_h),
+                pygame.FULLSCREEN
+            )
+        else:
+            self.screen = pygame.display.set_mode(
+                (FU_WIDTH, FU_HEIGHT),
+            )
+
         pygame.display.set_caption('Press \'SPACE\' to Snooze')
         self.clock = pygame.time.Clock()
 
@@ -34,15 +37,26 @@ class Game(object):
         self.levels = FU_LEVELS
 
     def loop(self):
+        """Main game loop
+
+        - Fills the screen with black BG
+        - Ticks the game clock (with frame rate of FU_FRAME_RATE)
+        - Calls `update_loop` method of the currently loaded level
+        - Calls handle_events to handle any events
+        """
         self.screen.fill((0, 0, 0))
         self.clock.tick(FU_FRAME_RATE)
         self.level.update_loop(self.screen, self.clock)
-        # self.screen.blit(self.level.world.bg, self.level.world.pos)
-        # for s in self.level.world.sprites:
-        #     self.screen.blit(s.current_frame, s.pos)
         self.handle_events()
 
     def handle_events(self):
+        """Handles events
+
+        - For all events:
+            - Calls level to handle event first
+            - If level doesn't handle events, then passes
+                to the global event handler to handle
+        """
         for event in pygame.event.get():
             if self.level.handle_events(event):
                 return True
@@ -54,6 +68,13 @@ class Game(object):
             return False
 
     def create_level(self, level_name, state=0):
+        """Initializes level `level_name` with state `state`
+
+        - Imports module `level_name`
+        - Creates level by creating `level_name.capitalize()` object
+        :returns: Instance of `level_name`
+        :rtype: subclass of level
+        """
         level_mod = import_module("FUGame.levels." + level_name)
         level_class = getattr(
             level_mod, level_name[0].upper() + level_name[1:])

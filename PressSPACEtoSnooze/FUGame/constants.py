@@ -2,6 +2,8 @@ FU_APATH = "assets"
 
 FU_WIDTH = 1366
 FU_HEIGHT = 768
+FU_FULLSCREEN = False
+FU_DEBUG = False
 FU_FRAME_RATE = 30
 FU_ROOM_SPEED = 1.2
 
@@ -40,7 +42,7 @@ FU_CREDITS = [
 
 ]
 
-# Use this like self.my_var = FU_SWAG_WORDS[:], i.e., crreate a copy!!!!!
+# Use this like self.my_var = FU_SWAG_WORDS[:], i.e., create a copy!!!
 FU_SWAG_WORDS = [
     "SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!",
     "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!",
@@ -64,5 +66,3 @@ FU_BORED_COMMENTS = [
     "I should just stop typing.",
     "Screw the world!",
 ]
-
-#assert all(i.startswith("FU_") for i in __all__)

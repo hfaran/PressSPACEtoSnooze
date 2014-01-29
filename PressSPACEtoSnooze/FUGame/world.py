@@ -22,6 +22,7 @@ class World(object):
         self.col_pts = col_pts
 
     def get_border_rects(self):
+        """Define border Rects for collision detection"""
         rects = []
         rects.append(pygame.Rect(0, 0, 1366, 42))
         rects.append(pygame.Rect(0, 0, 48, 768))
@@ -41,6 +42,7 @@ class World(object):
 
     @property
     def unsorted_sprites(self):
+        """Return list of all sprites"""
         return [v for v in self.static.values() + self.NPCs.values()]
 
     @property
@@ -54,6 +56,7 @@ class World(object):
         self._y = y
 
     def check_col(self, stat, char):
+        """Test collision of static object `stat` versus NPC `char`"""
         for pt in stat.col_pts:
             abs_pt = (pt[0] + stat.pos[0], pt[1] + stat.pos[1])
             if char.col_rect.collidepoint(abs_pt):
@@ -61,31 +64,26 @@ class World(object):
         return False
 
     def check_colliding(self, sprite):
-        # sprite_rect = sprite.col_image.get_rect()
-        # sprite_rect.x, sprite_rect.y = sprite.col_pos
-        # for s in [
-        #         s for s in self.static.values() + self.NPCs.values()
-        #         if s.name != sprite.name]:
-        #     if hasattr(s, "col_image"):
-        #         s_rect = s.col_image.get_rect()
-        #         s_rect.x, s_rect.y = s.col_pos
-        #         if s_rect.colliderect(sprite_rect):
-        #             return True
-
+        """Test if `sprite` is colliding against any objects in World"""
         col_rect = sprite.col_rect
 
-        for s in [s for s in self.static.values() + self.NPCs.values() if s.name != sprite.name]:
+        # Test for collisions against all statics+NPCs not itself
+        for s in [s for s in self.static.values() + self.NPCs.values()
+                  if s.name != sprite.name]:
             for pt in s.col_pts:
                 abs_pt = (pt[0] + s.pos[0], pt[1] + s.pos[1])
                 if col_rect.collidepoint(abs_pt):
                     return True
 
+        # Test for collisions against any collision points defined for World
         for pt in self.col_pts:
             if col_rect.collidepoint(pt):
                 return True
 
+        # Test for collision against border
         sprite_rect = sprite.sprite_rect
         for b in self.border_rects:
             if b.colliderect(sprite_rect):
                     return True
-        return False
+
+        return False  # No collisions
