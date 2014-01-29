@@ -13,8 +13,11 @@ from FUGame.utils import utils
 from FUGame.swagwords import SwagWord
 from FUGame.levels.level import Level, BaseEventHandlerMixin
 
+
+# The following for a self-referential joke
 aN = 1.0
 NaN = aN * 8.0
+
 
 class EventHandlerMixin(BaseEventHandlerMixin):
 
@@ -67,22 +70,25 @@ class Computer(Level, EventHandlerMixin):
             open(os.path.join("FUGame", "levels", "computer.py"),
                  "r").read().split("\n")
         )
-        self._bcgen = cycle(FU_SWAG_WORDS if state in [2] else FU_BORED_COMMENTS)
+        self._bcgen = cycle(
+            FU_SWAG_WORDS if state in [2] else FU_BORED_COMMENTS)
         self._bored_comments = []
         self._code_text = self.get_code_text()
         self._code_rect = pygame.Rect(250, 100, 750, 500)
         self._code_font = pygame.font.SysFont("courier_new", 20)
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "depressingoffice.ogg"))
+        pygame.mixer.music.load(
+            os.path.join(FU_APATH, "music", "depressingoffice.ogg"))
         pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play(999)
-        self.ambience = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "office_amb.wav"))
+        self.ambience = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "office_amb.wav"))
         self.ambience.set_volume(0.5)
         self.ambience.play(999)
-        self.key = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "type.wav"))
+        self.key = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "type.wav"))
         # Swagwords
         if self.state in [2]:
             self.swag_word = SwagWord(choice(FU_SWAG_WORDS), 128)
-
 
     def create_world(self):
         world = World(
@@ -132,14 +138,12 @@ class Computer(Level, EventHandlerMixin):
             pygame.mixer.music.stop()
             raise utils.NextLevelException("room", 1)
 
-        screen.blit(self.paper, (0,0))
+        screen.blit(self.paper, (0, 0))
 
         if self.state in [2]:
             self.swag_word.draw(screen)
 
     def get_code_text(self):
-        # return (" " * 10).join([choice(self._code) for i in
-        # xrange(len(self._code))])
         while len(self._bored_comments) < self._space_count:
             self._bored_comments.append(self._bcgen.next())
         # TODO Make sure this starts at proper

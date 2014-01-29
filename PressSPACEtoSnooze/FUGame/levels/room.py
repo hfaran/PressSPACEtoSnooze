@@ -13,6 +13,7 @@ from datetime import datetime
 
 
 class EventHandlerMixin(BaseEventHandlerMixin):
+
     def _move_character(self, direction):
         if self.allow_move:
             self.guy.is_moving = True
@@ -97,15 +98,20 @@ class Room(Level, EventHandlerMixin):
         self.credits = self.Credits()
         self.snooze_count = 0
         pygame.mixer.init()
-        pygame.mixer.music.load(os.path.join(FU_APATH, "music", "bedroomfinal.ogg"))
+        pygame.mixer.music.load(
+            os.path.join(FU_APATH, "music", "bedroomfinal.ogg"))
         pygame.mixer.music.set_volume(0.4)
         pygame.mixer.music.play(-1)
-        self.ambience = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "room_amb.wav"))
+        self.ambience = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "room_amb.wav"))
         self.ambience.set_volume(0.25)
         self.ambience.play(-1)
-        self.vibrate = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
-        self.text_alert = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "text.wav"))
-        self.alarm = pygame.mixer.Sound(os.path.join(FU_APATH, "soundFX", "alarm.wav"))
+        self.vibrate = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "vibrate.wav"))
+        self.text_alert = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "text.wav"))
+        self.alarm = pygame.mixer.Sound(
+            os.path.join(FU_APATH, "soundFX", "alarm.wav"))
         self.alarm_on = False
 
         self.sky = Sprite(
@@ -153,7 +159,7 @@ class Room(Level, EventHandlerMixin):
 
     def seconds_to_time(self, secs):
         secs = secs + 51 + 5 * 60
-        secs += 12*60-51 if self.state in [1] else 0
+        secs += 12 * 60 - 51 if self.state in [1] else 0
         hours = int(secs / 60)
         mins = int(secs % 60)
 
@@ -182,12 +188,12 @@ class Room(Level, EventHandlerMixin):
                 y=210,
                 z=0,
                 col_pts=[(
-                             4, 61), (
-                             17, 120), (
-                             27, 171), (
-                             40, 221), (
-                             56, 294), (69, 56), (120, 293), (182, 293),
-                         (131, 56)],
+                    4, 61), (
+                    17, 120), (
+                    27, 171), (
+                    40, 221), (
+                    56, 294), (69, 56), (120, 293), (182, 293),
+                    (131, 56)],
                 col_x_offset=None,
                 col_y_offset=None
             ),
@@ -245,16 +251,16 @@ class Room(Level, EventHandlerMixin):
                 y=170,
                 z=0,
                 col_pts=[(
-                             30, 310), (
-                             80, 310), (
-                             130, 310), (
-                             180, 310), (
-                             230, 310), (250, 310), (5, 265), (65, 265),
-                         (125, 265), (185, 265), (245,
-                                                  265), (
-                             270, 265), (
-                             0, 100), (65, 100),
-                         (125, 100), (185, 100), (245, 100), (270, 100), (10, 60), (235, 60)],
+                    30, 310), (
+                    80, 310), (
+                    130, 310), (
+                    180, 310), (
+                    230, 310), (250, 310), (5, 265), (65, 265),
+                    (125, 265), (185, 265), (245,
+                                             265), (
+                        270, 265), (
+                        0, 100), (65, 100),
+                    (125, 100), (185, 100), (245, 100), (270, 100), (10, 60), (235, 60)],
                 col_x_offset=15,
                 col_y_offset=15
             ),
@@ -293,22 +299,22 @@ class Room(Level, EventHandlerMixin):
             static=statics,
             NPCs=chars,
             col_pts=[(
-                         49, 630), (
-                         63, 555), (
-                         75, 500), (
-                         48, 464), (
-                         95, 370), (65, 305), (49, 267), (115, 280),
-                     (130, 210), (195, 210), (260, 210), (325, 210), (390,
-                                                                      210), (
-                         455, 210), (
-                         520, 210), (
-                         585, 210),
-                     (650, 210), (715, 210), (780, 210), (845, 210), (910,
-                                                                      210), (
-                         975, 210), (
-                         1040, 210), (
-                         1105, 210),
-                     (1170, 210), (1200, 210), (1210, 265), (1220, 305), (1255, 500), (1270, 560), (1280, 630)],
+                49, 630), (
+                63, 555), (
+                75, 500), (
+                48, 464), (
+                95, 370), (65, 305), (49, 267), (115, 280),
+                (130, 210), (195, 210), (260, 210), (325, 210), (390,
+                                                                 210), (
+                    455, 210), (
+                    520, 210), (
+                    585, 210),
+                (650, 210), (715, 210), (780, 210), (845, 210), (910,
+                                                                 210), (
+                    975, 210), (
+                    1040, 210), (
+                    1105, 210),
+                (1170, 210), (1200, 210), (1210, 265), (1220, 305), (1255, 500), (1270, 560), (1280, 630)],
             x=0,
             y=0
         )
@@ -363,7 +369,6 @@ class Room(Level, EventHandlerMixin):
                 self.guy.is_moving = False
                 self.game_over = True
 
-
         self._game_time = datetime.now() - self.start_time
         self.clock_time = self.seconds_to_time(self.game_time)
         self.clock_text = self.clock_font.render(
@@ -407,31 +412,38 @@ class Room(Level, EventHandlerMixin):
 
                 wait_time = 24
                 if 0 <= (self.game_time + 51) % wait_time <= 5 and \
-                        self.game_time > wait_time+9:  # TODO make 39 DEV: 9
+                        self.game_time > wait_time + 9:  # TODO make 39 DEV: 9
                     self._animate(self.world.static["cell"])
 
                     if not self.phone.up:
                         if self.msg_count == 0:
-                            self.phone.show_phone("Reminder Alarm - work @ 8am", "Iris")
+                            self.phone.show_phone(
+                                "Reminder Alarm - work @ 8am", "Iris")
                         elif self.msg_count == 1:
-                            self.phone.show_phone("Reminder Reminder Alarm - work @ 8am", "Iris")
+                            self.phone.show_phone(
+                                "Reminder Reminder Alarm - work @ 8am", "Iris")
                         elif self.msg_count == 2:
-                            self.phone.show_phone("Txt 59095 to donat $5 to http://spam.notascam.org", "Nigerian Prince")
+                            self.phone.show_phone(
+                                "Txt 59095 to donat $5 to http://spam.notascam.org", "Nigerian Prince")
                         elif self.msg_count == 3:
-                            self.phone.show_phone("You able to get the weekend off? :)", "Jamie")
+                            self.phone.show_phone(
+                                "You able to get the weekend off? :)", "Jamie")
                         elif self.msg_count == 4:
-                            self.phone.show_phone("You're late. Be here soon.", "JerkBossFace")
+                            self.phone.show_phone(
+                                "You're late. Be here soon.", "JerkBossFace")
                         elif self.msg_count == 5:
-                            self.phone.show_phone("Where are you?? GET HERE", "JerkBossFace")
+                            self.phone.show_phone(
+                                "Where are you?? GET HERE", "JerkBossFace")
                         elif self.msg_count == 6:
-                            self.phone.show_phone("Your e-bill is ready. Sign in to view.", "Robelus Mobile")
+                            self.phone.show_phone(
+                                "Your e-bill is ready. Sign in to view.", "Robelus Mobile")
                         elif self.msg_count == 7:
-                            self.phone.show_phone("Don't bother. You're FIRED!", "JerkBossFace")
+                            self.phone.show_phone(
+                                "Don't bother. You're FIRED!", "JerkBossFace")
                             self.game_over = True
                         self.msg_count += 1
                         self.text_alert.play()
                         self.vibrate.play(999, maxtime=5000)
-
 
                 else:
                     self.world.static["cell"].set_anim("I")
@@ -441,8 +453,8 @@ class Room(Level, EventHandlerMixin):
 
         if self.char_in_bed(self.guy.col_rect):
             self.guy.set_z(self.world.static["bed"].z_index + 1
-                                         - self.guy.pos[1]
-                                         - self.guy.current_frame.get_height())
+                           - self.guy.pos[1]
+                           - self.guy.current_frame.get_height())
         else:
             self.guy.set_z(0)
 
@@ -474,12 +486,16 @@ class Room(Level, EventHandlerMixin):
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))
 
         screen.blit(self.phone.image, self.phone.pos)
-        screen.blit(self.phone.sender_font.render(self.phone.sender, True, (200, 200, 200)), self.phone.sender_pos)
+        screen.blit(self.phone.sender_font.render(
+            self.phone.sender, True, (200, 200, 200)), self.phone.sender_pos)
         utils.drawText(screen, self.phone.message, (50, 50, 50),
-                       pygame.Rect(self.phone.msg_pos[0], self.phone.msg_pos[1], 155, 90),
+                       pygame.Rect(
+                           self.phone.msg_pos[
+                               0], self.phone.msg_pos[1], 155, 90),
                        self.phone.msg_font, aa=True)
 
-        screen.blit(pygame.font.SysFont("comicsansms", 16).render(str(self.snooze_count), True, (255, 255, 255)), (FU_WIDTH/2, 10))
+        screen.blit(pygame.font.SysFont("comicsansms", 16).render(
+            str(self.snooze_count), True, (255, 255, 255)), (FU_WIDTH / 2, 10))
 
         s = pygame.Surface((self.phone.image.get_width(), FU_HEIGHT - 630))
         s.fill((0, 0, 0))
@@ -487,7 +503,8 @@ class Room(Level, EventHandlerMixin):
 
         if self.game_over:
             screen.blit(self.credits.rect, (0, 0))
-            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i]) for i in xrange(len(self.credits.texts))]
+            [screen.blit(self.credits.texts[i], self.credits.texts_pos[i])
+             for i in xrange(len(self.credits.texts))]
 
         if self.display_cmd:
             screen.blit(
@@ -502,6 +519,7 @@ class Room(Level, EventHandlerMixin):
                 c.set_pos(c.pos[0] + randint(1, 4), c.pos[1])
 
     class Phone:
+
         def __init__(self):
             self.image = pygame.image.load(
                 os.path.join(FU_APATH, "UI", "phone_message.png")
@@ -525,11 +543,11 @@ class Room(Level, EventHandlerMixin):
 
         @property
         def sender_pos(self):
-            return self.pos[0]+20, self.pos[1]+83
+            return self.pos[0] + 20, self.pos[1] + 83
 
         @property
         def msg_pos(self):
-            return self.pos[0]+45, self.pos[1]+210
+            return self.pos[0] + 45, self.pos[1] + 210
 
         def update_phone(self):
             if self.move_up:
