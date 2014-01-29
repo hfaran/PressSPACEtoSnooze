@@ -42,7 +42,7 @@ FU_CREDITS = [
 
 ]
 
-# Use this like self.my_var = FU_SWAG_WORDS[:], i.e., crreate a copy!!!!!
+# Use this like self.my_var = FU_SWAG_WORDS[:], i.e., create a copy!!!
 FU_SWAG_WORDS = [
     "SWAG!", "BOUNCY CASTLES!", "SUPER SWEET!", "GOLD STAR!",
     "SUPREME!", "CHAMP-STAR!", "NEAT STREET!", "FANTASTIBLAM!",
@@ -66,5 +66,3 @@ FU_BORED_COMMENTS = [
     "I should just stop typing.",
     "Screw the world!",
 ]
-
-#assert all(i.startswith("FU_") for i in __all__)
