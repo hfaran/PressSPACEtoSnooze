@@ -10,13 +10,8 @@ class Sprite(object):
 
     """Sprite class"""
 
-    def __init__(self, filename, x, y, z, col_pts, col_x_offset=None, col_y_offset=None,
-                 fps=FU_FRAME_RATE, use_func=None):
-        # self.image = utils.convert_white_to_transparent(
-        #     pygame.image.load(
-        #         "assets/sprites/{}/{}.png".format(filename, filename)
-        #     )
-        # )
+    def __init__(self, filename, x, y, z, col_pts, col_x_offset=None,
+                 col_y_offset=None, fps=FU_FRAME_RATE, use_func=None):
         self.name = filename
 
         self._x = x
@@ -54,6 +49,7 @@ class Sprite(object):
 
     @property
     def col_rect(self):
+        """:returns: Rect used for Sprite collision"""
         if self.col_image:
             _col_rect = self.col_image.get_rect()
             _col_rect.x, _col_rect.y = self.col_pos
@@ -62,6 +58,7 @@ class Sprite(object):
 
     @property
     def sprite_rect(self):
+        """:returns: Rect of full Sprite"""
         _sprite_rect = self.current_frame.get_rect()
         _sprite_rect.x, _sprite_rect.y = self.pos
         return _sprite_rect
@@ -72,6 +69,11 @@ class Sprite(object):
         return self._x + self.col_x_offset, self._y + self.col_y_offset
 
     def set_anim(self, anim):
+        """Sets the animation state of Sprite to the start of `anim`
+
+        :param anim: Name of animation
+        :type  anim: str
+        """
         self.current_anim = anim
         self.current_frame_num = 0
         self.current_frame = self.anims[
@@ -88,20 +90,25 @@ class Sprite(object):
         self._y = y
 
     def nudge(self, x, y):
+        """Move sprite `(x, y)` pixels to bottom-right"""
         self._x += x
         self._y += y
 
     def set_z(self, z):
+        """Set z"""
         self._z = z
 
     @property
     def z_index(self):
+        """:returns: z-index of Sprite"""
         return self._y + self.current_frame.get_height() + self._z
 
     def update_dt(self):
+        """Update `dt` time variable for Sprite"""
         self.dt = datetime.now() - self.lastdt
 
     def next_frame(self):
+        """Move Sprite's current_frame to the next frame"""
         self.lastdt = datetime.now()
         self.current_frame_num = (
             self.current_frame_num + 1) % len(self.anims[self.current_anim]
@@ -114,8 +121,12 @@ class Sprite(object):
             return True
 
     def load_frames(self):
+        """Load frames from assets for Sprite"""
         path = os.path.join("assets", "sprites", self.name)
-        l = sorted([p for p in os.listdir(path) if os.path.isdir(os.path.join(path, p))])
+        l = sorted(
+            [p for p in os.listdir(path) if os.path.isdir(
+                os.path.join(path, p))]
+        )
         d = {
             folder_name: [pygame.image.load(
                 os.path.join(path, folder_name, image)
@@ -138,6 +149,10 @@ class Sprite(object):
             return False
 
     def set_frame(self, frame):
+        """Set the frame of animation of the sprite to the given frame
+
+        :type frame: int
+        """
         self.current_frame_num = frame
         self.current_frame = self.anims[
             self.current_anim][self.current_frame_num]
