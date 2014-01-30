@@ -48,6 +48,7 @@ class Office(Level, EventHandlerMixin):
 
     def __init__(self, state=0):
         self.world = self.create_world()
+        self.guy = self.world.NPCs["guy"]
         self.state = state
         self.allow_move = True
         self.sparked = False
@@ -108,6 +109,20 @@ class Office(Level, EventHandlerMixin):
         chars["rival"].is_animating = True
 
         statics = {
+            "arrowKeys": Sprite(
+                filename="arrowKeys",
+                x=827,
+                y=600,
+                z=50,
+                col_pts=[],
+            ),
+            "spaceBar": Sprite(
+                filename="spaceBar",
+                x=373,
+                y=712,
+                z=50,
+                col_pts=[],
+            ),
             "officeChairMain": Sprite(
                 filename="officeChairMain",
                 x=288,
@@ -362,14 +377,39 @@ class Office(Level, EventHandlerMixin):
         if self.world.NPCs["rival"].current_frame_num == 8 and self.world.NPCs["rival"].current_anim == "A":
                 self.world.NPCs["rival"].set_frame(7)
 
+    def _test_key_pressable_prompts(self, s):
+        keyc = {
+            "arrowKeys": True,
+            "spaceBar": any([
+                self.world.static["garbageCan"].sprite_rect.colliderect(
+                    self.guy.sprite_rect),
+                all(
+                    [
+                        self.world.static["coffee"].sprite_rect.colliderect(
+                            self.guy.sprite_rect),
+                        not self.coffee_spilt,
+                    ]
+                ),
+                all([self.coffee_spilt, self.check_rival_collision()]),
+                self.world.check_col(
+                    self.world.static["officeChairMain"], self.guy),
+            ])
+        }
+        condition = keyc[s.name]
+        if condition:
+            s.set_anim("I")
+        else:
+            s.set_anim("X")
+
     def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
-            if (s.name == "elevatorR" or s.name == "elevatorL") and self.door_open:
+            if s.name in ["arrowKeys", "spaceBar"]:
+                self._test_key_pressable_prompts(s)
+            elif (s.name == "elevatorR" or s.name == "elevatorL") and self.door_open:
                 s.set_anim("N")
             elif (s.name == "elevatorR" or s.name == "elevatorL") and not self.door_open:
                 s.set_anim("I")
-
             screen.blit(s.current_frame, s.pos)
 
         if self.sparked:

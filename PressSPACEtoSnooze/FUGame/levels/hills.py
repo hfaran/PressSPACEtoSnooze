@@ -124,6 +124,20 @@ class Hills(Level, EventHandlerMixin):
             ),
         }
         statics = {
+            "arrowKeys": Sprite(
+                filename="arrowKeys",
+                x=827,
+                y=600,
+                z=50,
+                col_pts=[],
+            ),
+            "spaceBar": Sprite(
+                filename="spaceBar",
+                x=373,
+                y=712,
+                z=50,
+                col_pts=[],
+            ),
             "smallShroom": Sprite(
                 filename="smallShroom",
                 x=277,
@@ -331,10 +345,29 @@ class Hills(Level, EventHandlerMixin):
         # Blitting
         self._blit(screen)
 
+    def _test_key_pressable_prompts(self, s):
+        keyc = {
+            "arrowKeys": True,
+            "spaceBar": any([
+                self.world.static["bigShroom"].sprite_rect.colliderect(
+                    self.guy.sprite_rect),
+                any(
+                    w.rect.colliderect(self.guy.sprite_rect) for w in self._swag_words
+                ),
+            ])
+        }
+        condition = keyc[s.name]
+        if condition:
+            s.set_anim("I")
+        else:
+            s.set_anim("X")
+
     def _blit(self, screen):
         if not self.dead:
             screen.blit(self.world.bg, self.world.pos)
             for s in self.world.sprites:
+                if s.name in ["arrowKeys", "spaceBar"]:
+                    self._test_key_pressable_prompts(s)
                 screen.blit(s.current_frame, s.pos)
             for w in self._swag_words:
                 w.draw(screen)
