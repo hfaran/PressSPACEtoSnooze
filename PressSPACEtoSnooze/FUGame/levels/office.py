@@ -31,6 +31,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                 self.cup.play()
                 break
         if self.coffee_spilt and self.check_rival_collision():
+            self.apologized = True
             self.door_open = False
             self.elevator.play()
             self.world.NPCs["rival"].is_animating = True
@@ -51,9 +52,10 @@ class Office(Level, EventHandlerMixin):
         self.guy = self.world.NPCs["guy"]
         self.state = state
         self.allow_move = True
+        self.apologized = False
         self.sparked = False
         self.credits = self.Credits()
-        self.coffee_spilt = False
+        self.coffee_spilt = False if state in [0] else True
         self.door_open = False
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.display_cmd = False
@@ -327,7 +329,7 @@ class Office(Level, EventHandlerMixin):
             self.__check_sparks_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
-            self.cmd = "Press 'SPACE' to Speed Up"
+            self.cmd = "Tap 'SPACE' to Speed Up"
             self.display_cmd = True
             self.credits.update_dt()
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
@@ -362,15 +364,17 @@ class Office(Level, EventHandlerMixin):
                 pygame.mixer.stop()
                 raise utils.NextLevelException("hills", 0)
 
-            if self.door_open:
-                if self.check_rival_collision():
-                    self.display_cmd = True
-                else:
-                    self.display_cmd = False
-            elif self.sparked:
-                self.display_cmd = True
-            else:
-                self.display_cmd = False
+        if all([self.door_open, self.check_rival_collision(), self.coffee_spilt]):
+            self.display_cmd = True
+            self.cmd = "Press 'SPACE' to Apologize"
+        elif self.sparked:
+            self.display_cmd = True
+        elif self.world.check_col(
+                self.world.static["officeChairMain"], self.guy):
+            self.cmd = "Press 'SPACE' to Work"
+            self.display_cmd = True
+        else:
+            self.display_cmd = False
 
         # Blitting
         self._blit(screen)
@@ -438,7 +442,7 @@ class Office(Level, EventHandlerMixin):
             pygame.mixer.stop()
             if self.state in [1]:
                 raise utils.NextLevelException("computer", 2)
-            if self.coffee_spilt:
+            if self.apologized:
                 raise utils.NextLevelException("computer", 1)
             else:
                 raise utils.NextLevelException("computer", 0)
