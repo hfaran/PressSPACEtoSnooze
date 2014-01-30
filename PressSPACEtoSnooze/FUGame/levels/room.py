@@ -137,7 +137,7 @@ class Room(Level, EventHandlerMixin):
             ) for i in xrange(1, 5)
         ]
 
-        self.door_rect = pygame.Rect(75, 365, 100, 130)
+        self.door_rect = pygame.Rect(75, 365, 30, 130)
 
         self.snooze_time = datetime.now()
         self.start_time = datetime.now()
