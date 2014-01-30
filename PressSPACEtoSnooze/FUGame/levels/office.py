@@ -60,8 +60,8 @@ class Office(Level, EventHandlerMixin):
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.display_cmd = False
         self.cmd = "Press 'SPACE' to Apologize"
-        self.door_rect = pygame.Rect(570, 215, 140, 20)
         self.main_chair_rect = pygame.Rect(284, 272, 415 - 284, 373 - 272)
+        self.door_rect = pygame.Rect(550, 95, 140, 20)
         self.cup = pygame.mixer.Sound(
             os.path.join(FU_APATH, "soundFX", "cup.wav"))
         self.cup.set_volume(1.0)
