@@ -61,6 +61,7 @@ class Office(Level, EventHandlerMixin):
         self.display_cmd = False
         self.cmd = "Press 'SPACE' to Apologize"
         self.door_rect = pygame.Rect(570, 215, 140, 20)
+        self.main_chair_rect = pygame.Rect(284, 272, 415 - 284, 373 - 272)
         self.cup = pygame.mixer.Sound(
             os.path.join(FU_APATH, "soundFX", "cup.wav"))
         self.cup.set_volume(1.0)
@@ -369,8 +370,7 @@ class Office(Level, EventHandlerMixin):
             self.cmd = "Press 'SPACE' to Apologize"
         elif self.sparked:
             self.display_cmd = True
-        elif self.world.check_col(
-                self.world.static["officeChairMain"], self.guy):
+        elif self.main_chair_rect.colliderect(self.guy.sprite_rect):
             self.cmd = "Press 'SPACE' to Work"
             self.display_cmd = True
         else:
@@ -395,8 +395,7 @@ class Office(Level, EventHandlerMixin):
                     ]
                 ),
                 all([self.coffee_spilt, self.check_rival_collision()]),
-                self.world.check_col(
-                    self.world.static["officeChairMain"], self.guy),
+                self.main_chair_rect.colliderect(self.guy.sprite_rect),
             ])
         }
         condition = keyc[s.name]
@@ -436,9 +435,8 @@ class Office(Level, EventHandlerMixin):
             self.allow_move = False
 
     def _check_chair_collision(self):
-        # colliding with sparks
-        if self.world.check_col(
-                self.world.static["officeChairMain"], self.world.NPCs["guy"]):
+        # colliding with chair
+        if self.main_chair_rect.colliderect(self.guy.sprite_rect):
             pygame.mixer.stop()
             if self.state in [1]:
                 raise utils.NextLevelException("computer", 2)
