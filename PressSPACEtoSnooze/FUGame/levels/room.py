@@ -182,6 +182,20 @@ class Room(Level, EventHandlerMixin):
         }
 
         statics = {
+            "arrowKeys": Sprite(
+                    filename="arrowKeys",
+                    x=827,
+                    y=600,
+                    z=50,
+                    col_pts=[],
+            ),
+            "spaceBar": Sprite(
+                    filename="spaceBar",
+                    x=373,
+                    y=712,
+                    z=50,
+                    col_pts=[],
+            ),
             "desk": Sprite(
                 filename="desk",
                 x=1075,
@@ -471,6 +485,17 @@ class Room(Level, EventHandlerMixin):
         # CALL TO self._blit #
         self._blit(screen)
 
+    def _test_key_pressable_prompts(self, s):
+        keyc = {
+            "arrowKeys": self.allow_move,
+            "spaceBar": self.display_cmd and not self.game_over
+        }
+        condition = keyc[s.name]
+        if condition:
+            s.set_anim("I")
+        else:
+            s.set_anim("X")
+
     def _blit(self, screen):
         # Blitting
         screen.blit(self.sky.current_frame, self.sky.pos)
@@ -481,6 +506,8 @@ class Room(Level, EventHandlerMixin):
         screen.blit(self.world.bg, self.world.pos)
 
         for s in self.world.sprites:
+            if s.name in ["arrowKeys", "spaceBar"]:
+                self._test_key_pressable_prompts(s)
             screen.blit(s.current_frame, s.pos)
             if s.name == "alarmClock":
                 screen.blit(self.clock_text, (s.pos[0] + 25, s.pos[1] + 20))

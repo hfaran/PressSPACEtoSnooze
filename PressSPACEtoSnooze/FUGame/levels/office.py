@@ -31,6 +31,7 @@ class EventHandlerMixin(BaseEventHandlerMixin):
                 self.cup.play()
                 break
         if self.coffee_spilt and self.check_rival_collision():
+            self.apologized = True
             self.door_open = False
             self.elevator.play()
             self.world.NPCs["rival"].is_animating = True
@@ -48,16 +49,19 @@ class Office(Level, EventHandlerMixin):
 
     def __init__(self, state=0):
         self.world = self.create_world()
+        self.guy = self.world.NPCs["guy"]
         self.state = state
         self.allow_move = True
+        self.apologized = False
         self.sparked = False
         self.credits = self.Credits()
-        self.coffee_spilt = False
+        self.coffee_spilt = False if state in [0] else True
         self.door_open = False
         self.cmd_font = pygame.font.SysFont("verdana", 48)
         self.display_cmd = False
         self.cmd = "Press 'SPACE' to Apologize"
         self.door_rect = pygame.Rect(570, 215, 140, 20)
+        self.main_chair_rect = pygame.Rect(284, 272, 415 - 284, 373 - 272)
         self.cup = pygame.mixer.Sound(
             os.path.join(FU_APATH, "soundFX", "cup.wav"))
         self.cup.set_volume(1.0)
@@ -108,6 +112,20 @@ class Office(Level, EventHandlerMixin):
         chars["rival"].is_animating = True
 
         statics = {
+            "arrowKeys": Sprite(
+                filename="arrowKeys",
+                x=827,
+                y=600,
+                z=50,
+                col_pts=[],
+            ),
+            "spaceBar": Sprite(
+                filename="spaceBar",
+                x=373,
+                y=712,
+                z=50,
+                col_pts=[],
+            ),
             "officeChairMain": Sprite(
                 filename="officeChairMain",
                 x=288,
@@ -312,7 +330,7 @@ class Office(Level, EventHandlerMixin):
             self.__check_sparks_collision()
         else:
             self._animate(self.world.NPCs["guy"], anim_once=False)
-            self.cmd = "Press 'SPACE' to Speed Up"
+            self.cmd = "Tap 'SPACE' to Speed Up"
             self.display_cmd = True
             self.credits.update_dt()
             if self.credits.dt.microseconds > 1.0 / self.credits.fps * 1000000:
@@ -347,29 +365,54 @@ class Office(Level, EventHandlerMixin):
                 pygame.mixer.stop()
                 raise utils.NextLevelException("hills", 0)
 
-            if self.door_open:
-                if self.check_rival_collision():
-                    self.display_cmd = True
-                else:
-                    self.display_cmd = False
-            elif self.sparked:
-                self.display_cmd = True
-            else:
-                self.display_cmd = False
+        if all([self.door_open, self.check_rival_collision(), self.coffee_spilt]):
+            self.display_cmd = True
+            self.cmd = "Press 'SPACE' to Apologize"
+        elif self.sparked:
+            self.display_cmd = True
+        elif self.main_chair_rect.colliderect(self.guy.sprite_rect):
+            self.cmd = "Press 'SPACE' to Work"
+            self.display_cmd = True
+        else:
+            self.display_cmd = False
 
         # Blitting
         self._blit(screen)
         if self.world.NPCs["rival"].current_frame_num == 8 and self.world.NPCs["rival"].current_anim == "A":
                 self.world.NPCs["rival"].set_frame(7)
 
+    def _test_key_pressable_prompts(self, s):
+        keyc = {
+            "arrowKeys": True,
+            "spaceBar": any([
+                self.world.static["garbageCan"].sprite_rect.colliderect(
+                    self.guy.sprite_rect),
+                all(
+                    [
+                        self.world.static["coffee"].sprite_rect.colliderect(
+                            self.guy.sprite_rect),
+                        not self.coffee_spilt,
+                    ]
+                ),
+                all([self.coffee_spilt, self.check_rival_collision()]),
+                self.main_chair_rect.colliderect(self.guy.sprite_rect),
+            ])
+        }
+        condition = keyc[s.name]
+        if condition:
+            s.set_anim("I")
+        else:
+            s.set_anim("X")
+
     def _blit(self, screen):
         screen.blit(self.world.bg, self.world.pos)
         for s in self.world.sprites:
-            if (s.name == "elevatorR" or s.name == "elevatorL") and self.door_open:
+            if s.name in ["arrowKeys", "spaceBar"]:
+                self._test_key_pressable_prompts(s)
+            elif (s.name == "elevatorR" or s.name == "elevatorL") and self.door_open:
                 s.set_anim("N")
             elif (s.name == "elevatorR" or s.name == "elevatorL") and not self.door_open:
                 s.set_anim("I")
-
             screen.blit(s.current_frame, s.pos)
 
         if self.sparked:
@@ -392,13 +435,12 @@ class Office(Level, EventHandlerMixin):
             self.allow_move = False
 
     def _check_chair_collision(self):
-        # colliding with sparks
-        if self.world.check_col(
-                self.world.static["officeChairMain"], self.world.NPCs["guy"]):
+        # colliding with chair
+        if self.main_chair_rect.colliderect(self.guy.sprite_rect):
             pygame.mixer.stop()
             if self.state in [1]:
                 raise utils.NextLevelException("computer", 2)
-            if self.coffee_spilt:
+            if self.apologized:
                 raise utils.NextLevelException("computer", 1)
             else:
                 raise utils.NextLevelException("computer", 0)
