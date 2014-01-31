@@ -183,18 +183,18 @@ class Room(Level, EventHandlerMixin):
 
         statics = {
             "arrowKeys": Sprite(
-                    filename="arrowKeys",
-                    x=827,
-                    y=600,
-                    z=50,
-                    col_pts=[],
+                filename="arrowKeys",
+                x=827,
+                y=600,
+                z=50,
+                col_pts=[],
             ),
             "spaceBar": Sprite(
-                    filename="spaceBar",
-                    x=373,
-                    y=712,
-                    z=50,
-                    col_pts=[],
+                filename="spaceBar",
+                x=373,
+                y=712,
+                z=50,
+                col_pts=[],
             ),
             "desk": Sprite(
                 filename="desk",
@@ -488,7 +488,13 @@ class Room(Level, EventHandlerMixin):
     def _test_key_pressable_prompts(self, s):
         keyc = {
             "arrowKeys": self.allow_move,
-            "spaceBar": self.display_cmd and not self.game_over
+            "spaceBar": any([
+                self.display_cmd and not self.game_over,
+                self.world.static["chair"].sprite_rect.colliderect(
+                    self.guy.sprite_rect),
+                self.world.static["cell"].sprite_rect.colliderect(
+                    self.guy.sprite_rect)
+            ])
         }
         condition = keyc[s.name]
         if condition:
