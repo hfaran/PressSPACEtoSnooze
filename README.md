@@ -7,7 +7,7 @@
 
 Well, you press 'Space' to snooze, then you snooze... (or do you?) It's all about escaping the mundane, and how we see the world as WE are, rather than how it really is. ENJOY! :)
 
-* ~~A `PressSPACEtoSnooze/assets` folder with the games assets is required. This is not available in the repository; however comes in the bundled with the archive available for download at the [GGJ website](http://globalgamejam.org/2014/games/press-space-snooze).~~ Assets are now bundled in the repository.
+* ~~A `PressSPACEtoSnooze/assets` folder with the games assets is required. This is not available in the repository; however comes in the bundled with the archive available for download at the [GGJ website](http://globalgamejam.org/2014/games/press-space-snooze).~~ [`assets`](https://github.com/hfaran/GGJ2014/tree/master/PressSPACEtoSnooze/assets) are now bundled in the repository.
 
 ## Dependencies 
 * [Python 2.7](http://www.python.org/download/releases/2.7.6/)
