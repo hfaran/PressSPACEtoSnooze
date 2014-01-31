@@ -19,7 +19,6 @@ lib
 lib64
 __pycache__
 .idea
-assets
 .DS_Store
 # Installer logs
 pip-log.txt
