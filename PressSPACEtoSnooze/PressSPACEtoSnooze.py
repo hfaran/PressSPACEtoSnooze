@@ -93,6 +93,7 @@ class Game(object):
                 self.loop()
                 pygame.display.flip()
             except utils.NextLevelException as e:
+                self.level.fade_out(self.screen)
                 self.current_level = e.next_level
                 self.level = self.create_level(self.current_level, e.state)
 

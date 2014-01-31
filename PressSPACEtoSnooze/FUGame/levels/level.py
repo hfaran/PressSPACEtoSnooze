@@ -1,7 +1,9 @@
-from pygame.locals import *
-from FUGame.constants import *
 import pygame
+from pygame.locals import *
 from datetime import datetime
+from time import sleep
+
+from FUGame.constants import *
 
 
 class BaseEventHandlerMixin:
@@ -52,6 +54,17 @@ class Level(object):
                 else:
                     s.set_pos(*s.old_pos)
                 self._animate(s)
+
+    def fade_out(self, screen):
+        rect = pygame.Surface((FU_WIDTH, FU_HEIGHT))
+        rect.fill((0, 0, 0))
+        alpha = 0
+        while alpha <= 45:
+            rect.set_alpha(alpha)
+            sleep(0.01)
+            alpha += 1
+            screen.blit(rect, (0, 0))
+            pygame.display.flip()
 
     class Credits:
 
