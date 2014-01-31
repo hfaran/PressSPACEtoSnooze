@@ -10,8 +10,8 @@ Well, you press 'Space' to snooze, then you snooze... (or do you?) It's all abou
 * A `PressSPACEtoSnooze/assets` folder with the games assets is required. This is not available in the repository; however comes in the bundled with the archive available for download at the [GGJ website](http://globalgamejam.org/2014/games/press-space-snooze).
 
 ## Dependencies 
-* Python 2.7
-* Pygame 1.9.1+
+* [Python 2.7](http://www.python.org/download/releases/2.7.6/)
+* [Pygame 1.9.1+](http://www.pygame.org/download.shtml)
 
 
 ## Global Game Jam 2014
